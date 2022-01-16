@@ -1,0 +1,81 @@
+<div class="social_block block">
+    {% if settings.social_title != blank %}
+        <h4 class="title_block ">{{ settings.social_title }}</h4>
+    {% endif %}
+    <div class="block_content pull-left">        
+        <ul class="list-unstyled clearfix list-group list-inline">
+            {% if settings.social_facebook_link != blank %}
+                <li class="facebook">
+                    <a target="_blank" href="{{ settings.social_facebook_link }}" title="{{ shop.name }} on Facebook" class="btn-tooltip" data-original-title="Facebook">
+                        <i class="fa fa-facebook"></i>
+                        <span class="text-social">Facebook</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.social_twitter_link != blank %}
+                <li class="twitter">
+                    <a target="_blank" href="{{ settings.social_twitter_link }}" title="{{ shop.name }} on Twitter" class="btn-tooltip" data-original-title="Twitter">
+                        <i class="fa fa-twitter"></i>
+                        <span class="text-social">Twitter</span>
+                    </a>
+                </li>
+            {% endif %}
+          	{% if settings.social_instagram_link != blank %}
+                <li class="instagram">
+                    <a target="_blank" href="{{ settings.social_instagram_link }}" title="{{ shop.name }} on Instagram" class="btn-tooltip" data-original-title="Instagram">
+                        <i class="fa fa-instagram"></i>
+                        <span class="text-social">Instagram</span>
+                    </a>
+                </li>
+            {% endif %}
+          	{% if settings.social_pinterest_link != blank %}
+                <li class="pinterest">
+                    <a target="_blank" href="{{ settings.social_pinterest_link }}" title="{{ shop.name }} on Pinterest" class="btn-tooltip" data-original-title="Pinterest">
+                        <i class="fa fa-pinterest"></i>
+                        <span class="text-social">Pinterest</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.social_vimeo_link != blank %}
+                <li class="vimeo">
+                    <a target="_blank" href="{{ settings.social_vimeo_link }}" title="{{ shop.name }} on Vimeo" class="btn-tooltip" data-original-title="Vimeo">
+                        <i class="fa fa-vimeo-square"></i>
+                        <span class="text-social">Vimeo</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.social_youtube_link != blank %}
+                <li class="youtube">
+                    <a target="_blank" href="{{ settings.social_youtube_link }}" title="{{ shop.name }} on Youtube" class="btn-tooltip" data-original-title="Youtube">
+                        <i class="fa fa-youtube-play "></i>
+                        <span class="text-social">Youtube</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.social_googleplus_link != blank %}
+                <li class="google-plus">
+                    <a target="_blank" href="{{ settings.social_googleplus_link }}" title="{{ shop.name }} on Google Plus" class="btn-tooltip" data-original-title="Google Plus">
+                        <i class="fa fa-google-plus"></i>
+                        <span class="text-social">Google Plus</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.social_tumblr_link != blank %}
+                <li class="tumblr">
+                    <a target="_blank" href="{{ settings.social_tumblr_link }}" title="{{ shop.name }} on Tumblr" class="btn-tooltip" data-original-title="Tumblr">
+                        <i class="fa fa-tumblr-square "></i>
+                        <span class="text-social">Tumblr</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.social_snapchat_link != blank %}
+                <li class="snapchat">
+                    <a target="_blank" href="{{ settings.social_snapchat_link }}" title="{{ shop.name }} on Snapchat" class="btn-tooltip" data-original-title="Snapchat">
+                        <i class="fa fa-snapchat-ghost"></i>
+                        <span class="text-social">Snapchat</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

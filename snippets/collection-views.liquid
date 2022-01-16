@@ -1,0 +1,35 @@
+<div class="collection-view clearfix">
+  	{% if settings.on-off-filter and settings.filter-position == "top" %}
+  	<button class="config-filter"><i class="fa fa-sliders"></i> Filter</button>
+  	{% endif %}
+    {% comment %}<button type="button" title="{{ 'collections.general.grid_view' | t }}" class="change-view{% unless template contains 'list' %} change-view--active{% endunless %}" data-view="grid">
+        <span class="icon-fallback-text">
+            <span class="fa fa-th-large" aria-hidden="true"></span>
+            <span class="fallback-text">{{ 'collections.general.grid_view' | t }}</span>
+        </span>
+    </button>
+    
+    <button type="button" title="{{ 'collections.general.list_view' | t }}" class="change-view{% if template contains 'list' %} change-view--active{% endif %}" data-view="list">
+        <span class="icon-fallback-text">
+            <span class="fa fa-bars" aria-hidden="true"></span>
+            <span class="fallback-text">{{ 'collections.general.list_view' | t }}</span>
+        </span>
+    </button>
+    {% endcomment %}
+    {% comment %} {% if settings.sidebar_fixed %} {% endif %} {% endcomment %}
+    <button type="button" class="filter_bar">
+        <i class="fa fa-sliders"></i> Filter
+    </button>
+    <button type="button" title="{{ 'collections.general.grid_view' | t }}" class="hidden-xs hidden-sm view-grid grid-two grid-x change-views {% if section.settings.col_products == '2' %} active {% endif %}"  data-num="2" >
+    </button>
+    <button type="button" title="{{ 'collections.general.grid_view' | t }}" class="hidden-xs hidden-sm view-grid grid-three grid-x change-views {% if section.settings.col_products == '3' %} active {% endif %}"  data-num="3">
+    </button>
+    <button type="button" title="{{ 'collections.general.grid_view' | t }}" class="hidden-xs hidden-sm view-grid grid-four grid-x change-views {% if section.settings.col_products == '4' %} active {% endif %}"  data-num="4">
+    </button>
+    {% if section.settings.set_box != 'box-container' %}
+    <button type="button" title="{{ 'collections.general.grid_view' | t }}" class="hidden-xs hidden-sm view-grid grid-five grid-x change-views {% if section.settings.col_products == '5' %} active {% endif %} "  data-num="5">
+    </button>
+    <button type="button" title="{{ 'collections.general.grid_view' | t }}" class="hidden-xs hidden-sm view-grid grid-six grid-x change-views {% if section.settings.col_products == '6' %} active {% endif %}"  data-num="6">
+    </button>
+    {% endif %}
+</div>

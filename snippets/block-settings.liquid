@@ -1,0 +1,87 @@
+{%- if settings.enable_line -%}
+<div id="block_currencies_lang" class="{% if settings.style_line == 'dropdown'%} popup-over  e-scale {% elsif settings.style_line == 'sidebar' %} pop-sidebar{% endif %} right-about e-right {% unless settings.enable_line %} disable__block {% endunless %}">
+   <div data-toggle="dropdown" class="popup-title dropdown-toggle clearfix" title="{{"general.setting.title" | t}}">
+      <div class="ap-lang-content">
+      <span class="line-right line-1"></span>
+      <span class="line-right line-2"></span>
+      <span class="line-right line-3"></span>
+      </div>
+   </div>
+   {%- capture lang -%}
+       <div>
+         {%- if settings.enable_language -%}
+         {%- include 'ap-multilang-box' -%}
+         {%- endif -%}
+         {%- if settings.show_multiple_currencies -%}
+            <div class="ap-lang-content"><span class="dropdown-heading multilang-heading">{{"general.currencies.title" | t}}</span></div>
+            <div class="currencies-content clearfix">
+               <ul id="currencies" class="currencies_ul toogle_content list-unstyled clearfix">
+                  {%- for i in (1..5) -%}
+                  {%- capture currency -%}supported_currencies_{{ i }}{%- endcapture -%}
+                  {%- capture currency_img -%}currencies_img_{{ i }}.png{%- endcapture -%}
+                  {%- assign currency_size = settings[currency] | size -%}
+                  {%- if currency_size > 0 -%}
+                  <li class="item_currencies">
+                     <a data-currency="{{ settings[currency] }}" class="{% if shop.currency == settings[currency] %}selected{% endif %}" href="javascript:void(0);" rel="nofollow">
+                     {{ currency_img | asset_url | img_tag: settings[currency] }}
+                     {{settings[currency]}}
+                     </a>
+                  </li>
+                  {%- endif -%}
+                  {%- endfor -%}
+               </ul>
+            </div>
+      {%- endif -%}
+      </div>
+   {%- endcapture -%}
+   {%- if settings.style_line == 'dropdown' -%}
+      <div class="dropdown-menu">
+         {{lang}}
+      </div>
+   {%- elsif settings.style_line == 'sidebar' -%}
+      <div class="over_right"></div>
+      <div class="dropdown-menu drop__right">
+         <span class="pop--close">{%- include 'icon-close' -%}</span>
+         {{lang}}
+         <div class="drop__about">
+            {% if settings.title_about != blank %}
+               <h3 class="drop__about--title">{{settings.title_about}}</h3>
+            {% endif %}
+            {%- if settings.des_about != blank -%}
+               <div class="drop__about--des">{{settings.des_about}}</div>
+            {%- endif -%}
+         </div>
+         {% if settings.enable_socical_bar%}
+            {% include 'social_general'%}
+         {% endif %}
+      </div>
+   {%- endif -%}
+</div>
+
+<script type="text/javascript">
+   $(document).ready(function(){
+      $(".ap-multilang-box").before('<div class="ap-lang-content"><span class="dropdown-heading multilang-heading">{{'general.language.title' | t}}</span></div>');
+      $(".ap-multilang-box").find(".popup-title ").css({display:"none"}),$(".ap-multilang-box").find(".list-lang").removeClass("dropdown-menu"),$(".icon-language").find("span").css({display:"none"});
+      //sidebar
+      var container = $(".drop__right");
+      $("#block_currencies_lang .popup-title").click(function(){
+         container.toggleClass("active");
+         $('.over_right').toggleClass("active");
+      });
+      $(".pop--close,.over_right").click(function(){
+         container.removeClass("active");
+         $('.over_right').removeClass('active');
+      });   
+     
+      /*$(document).mouseup(function(e) 
+      {
+       // if the target of the click isn't the container nor a descendant of the container
+       if (!container.is(e.target) && container.has(e.target).length === 0) 
+         {
+            container.removeClass("active");
+            $(".pop-sidebar").removeClass("active");
+         }
+      });*/
+   });
+</script>
+{%- endif -%}

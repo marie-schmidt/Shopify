@@ -1,0 +1,66 @@
+{%- include 'set_layout' -%}
+<div class="block-section shop-insta" {%- if section.settings.custom_space != blank -%} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }}" {%- endif -%}>
+   <div class="block_content {{set-box}}" data-section-id="{{ section.id }}" data-section-type="quotes">
+     {% if section.settings.title != blank %}
+         {% include 'style_header' %}
+         <div class="section-header text-center {{ title_style }} {{ size_title }}">
+            <h2><span>{{ section.settings.title | escape }}</span></h2>
+         </div>
+     {% endif %}
+
+     {% if section.settings.content_insta != blank %}
+       {{section.settings.content_insta}}
+     {% endif %}
+   </div>
+</div>
+
+{% schema %}
+{
+  "name": "Shop Instagram",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "custom_space",
+      "label": "Css Style Section",
+      "default":"padding-top:100px;padding-bottom:100px"
+    },
+    {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "none",
+       "info":      "Set Layout Section"
+    },
+    {
+      "type": "color",
+      "id": "bg_section",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop Instagram"
+    },
+    {
+      "type": "textarea",
+      "id": "content_insta",
+      "label": "Embeds Instagram [link](https://snapppt.com/embeds)",
+      "default":"<script src='https:\/\/snapppt.com\/widgets\/widget_loader\/ceb3ee2f-7ee7-4aa0-b88c-eb522782f669\/grid.js' defer='' class='snapppt-widget'></script>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop Instagram",
+      "category": "Image"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,60 @@
+<div class="footer-container">
+    <section id="footercenter" class="footer-center">
+        <div class="{{set-box}}">
+            <div class="footer-center-wrap">
+                <div class="row col--block">
+                    <div class="col-md-12 col-sm-12 col-xs-12 col-footer ">
+                        <div class=" box-footer box_links">
+                            <div class="row">
+                              <div class="col-md-3 col-sm-3 col-xs-12">
+                                {% if settings.footer_quicklinks_enable %}
+                                {% assign footerlinks_name = settings.footer_quicklinks_linklist %}
+                                {% assign footerlinks_title = settings.footer_quicklinks_title %}
+                                {% include 'block-footerlinks' with '1' %}
+                                {% endif %}
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-xs-12">
+                                {% if settings.footer_quicklinks_enable_1%}
+                                {% assign footerlinks_name = settings.footer_quicklinks_linklist_1 %}
+                                {% assign footerlinks_title = settings.footer_quicklinks_title_1 %}
+                                {% include 'block-footerlinks' with '2' %}
+                                {% endif %}
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-xs-12">
+                                {% if settings.footer_quicklinks_enable_2%}
+                                {% assign footerlinks_name = settings.footer_quicklinks_linklist_2 %}
+                                {% assign footerlinks_title = settings.footer_quicklinks_title_2 %}
+                                {% include 'block-footerlinks' with '3' %}
+                                {% endif %}
+                              </div>
+                              <div class="col-md-3 col-sm-3 col-xs-12">
+                                {% if settings.footer_quicklinks_enable_3%}
+                                    {% assign footerlinks_name = settings.footer_quicklinks_linklist_3 %}
+                                    {% assign footerlinks_title = settings.footer_quicklinks_title_3 %}
+                                    {% include 'block-footerlinks' with '4' %}
+                                {% endif %}
+                             </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="footernav" class="footer-nav">
+        <div id="powered">
+            <div class="{{set-box}}">
+              <div class="row">
+                  <div class="powered_left col-sm-6 col-xs-12 ">
+                     {% if settings.footer_social_enable %}
+                        {% include 'block-social' %}
+                     {% endif %}
+                  </div>
+                  <div  class="powered powered_right col-sm-6 col-xs-12 {% if settings.animated_enable %}wow animated {{ settings.lazyload_fcoppyright }}{% endif %}">
+                     <p>&copy; Copyright {{ "now" | date: "%Y" }} {{ shop.name }}. {{ powered_by_link }}</p>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </section>
+</div>

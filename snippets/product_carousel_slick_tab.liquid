@@ -1,0 +1,42 @@
+<div class="product_list_owl row producttabs-wrapper__item">
+  <div id="Producttabs-{{block.id }}" data-toshow="{{ columns_product }}" data-block-id="{{block.id}}" 
+         data-scroll="{{ slidesToScroll }}" 
+         data-row="{{ row_slick }}"
+         data-arrows="{{ enable_nav }}"
+         data-dot="{{ enable_dot }}"
+         data-laptop="{{item_laptop}}"
+         data-table="{{item_table}}"
+         data-phonemin="{{item_phone_min}}"
+        {% if product_interval > 0 %}
+         data-play="{{ product_interval }}" 
+         data-autoplay="true" 
+         {% else %} 
+         data-autoplay="false" 
+         {% endif %} 
+        class="slick-hide slide">
+    {% assign grid_item_width = ' ' %}
+    {% assign products = collection.products %}
+    {% for product in products limit:product_in_tab %}    
+        <div class="item">          
+          {% include 'product-grid-item' %}   
+        </div>
+        {% else %}
+        {% for i in (1..product_in_tab) %}
+        <div class="grid__item .grid__item--{{section.id}} {{ grid_item_width }}">
+            <div class="product-container text-left product-block">
+                <div class="product-image-container image">
+                    <a href="#" class="product_img_link">
+                        {% capture current %}{% cycle 1, 2, 3, 4 %}{% endcapture %}
+                {{ 'product-' | append: current | placeholder_svg_tag: 'placeholder-svg' }}
+                    </a>
+                </div>
+                <div class="product-meta">
+                    <div class="grid-view-item__title"><a href="#" class="product-name">{{ 'homepage.onboarding.product_title' | t }}</a></div>
+                    <div class="grid-view-item__meta">{% include 'product-price' %}</div>
+                </div>
+            </div>
+        </div>
+      {% endfor %}
+    {% endfor %}
+  </div>
+</div>

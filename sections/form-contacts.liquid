@@ -1,0 +1,74 @@
+{% if section.settings.enable_form %}
+<div class="contact-form form-vertical">
+   {% form 'contact' %}
+
+    {% if form.posted_successfully? %}
+      <p class="note form-success">
+        {{ 'contact.form.post_success' | t }}
+      </p>
+    {% endif %}
+
+    {{ form.errors | default_errors }}
+    {% if section.settings.title_form != blank %}
+    <h4 class="contact-form--title text-center">{{section.settings.title_form}}</h4>
+    {% endif %}
+    {% if section.settings.sub_form != blank %}
+    <p class="contact-form-sub text-center">{{ section.settings.sub_form }}</p>
+    {% endif %}
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1 col-sm-12 col-xs-12">
+        <div class="row">
+          <div class="col-sm-6 col-xs-12">
+            <label for="ContactFormName">{{ 'contact.form.name' | t }}</label>
+            <input class="form-control" type="text" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+            <label for="ContactFormEmail" class="{% if form.errors contains 'email' %}label--error{% endif %}">{{ 'contact.form.email' | t }}</label>
+            <input class="form-control" type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="{% if form.errors contains 'email' %}input--error{% endif %}">
+            <label for="ContactFormPhone">{{ 'contact.form.phone' | t }}</label>
+            <input class="form-control" type="tel" id="ContactFormPhone" name="contact[phone]" pattern="[0-9\-]*" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+          </div>
+          <div class="col-sm-6 col-xs-12">
+            <label for="ContactFormMessage">{{ 'contact.form.message' | t }}</label>
+            <textarea class="form-control" rows="9" id="ContactFormMessage" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+            {% if section.settings.btn-text !=blank %}
+            <input type="submit" class="btn btn-outline btn-mess" value="{{ section.settings.btn-text }}">
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+   {% endform %}
+</div>
+{% endif %}
+{% schema %}
+{
+  "name": "Map Contacts",
+  "settings": [
+  {
+     "type": "checkbox",
+     "id": "enable_form",
+     "label": "Enable Form contacts",
+     "default":true
+   },
+   {
+      "type": "header",
+      "content": "------ * Form Contacts * ------"
+   },
+   {
+     "type": "text",
+     "id": "title_form",
+     "label": "Title form"
+   },
+   {
+     "type": "textarea",
+     "id": "sub_form",
+     "label": "Sub Form"
+   },
+   {
+     "type": "text",
+     "id": "btn-text",
+     "label": "Text Button",
+     "default":"Send Message"
+   }
+  ]
+}
+{% endschema %}

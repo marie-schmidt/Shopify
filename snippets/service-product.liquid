@@ -1,0 +1,26 @@
+{% if section.settings.enable_ser_pro %} 
+  <div class="pro__ser">
+     <ul class="list-inline row">
+      {%- if section.settings.ser_1 -%}
+        <li class="col-md-3 col-sm-6 col-xs-12">
+           <div class="pro__ser--box"><img src="{{ section.settings.icon_1 | img_url: 'master' }}"  alt="{{ section.settings.ser_1 }}"> <span>{{section.settings.ser_1}}</span></div>
+        </li>
+      {%- endif -%}
+      {%- if section.settings.ser_2 -%}
+        <li class="col-md-3 col-sm-6 col-xs-12 ">
+           <div class="pro__ser--box"><img src="{{ section.settings.icon_2 | img_url: 'master' }}"  alt="{{ section.settings.ser_2 }}"> <span>{{section.settings.ser_2}}</span></div>
+        </li>
+      {%- endif -%}
+      {%- if section.settings.ser_3 -%}
+        <li class="col-md-3 col-sm-6 col-xs-12">
+           <div class="pro__ser--box"><img src="{{ section.settings.icon_3 | img_url: 'master' }}"  alt="{{ section.settings.ser_3 }}"> <span>{{section.settings.ser_3}}</span></div>
+        </li>
+      {%- endif -%}
+      {%- if section.settings.ser_4 -%}
+        <li class="col-md-3 col-sm-6 col-xs-12 ">
+           <div class="pro__ser--box"><img src="{{ section.settings.icon_4 | img_url: 'master' }}"  alt="{{ section.settings.ser_4 }}"> <span>{{section.settings.ser_4}}</span></div>
+        </li>
+      {%- endif -%}
+     </ul>
+  </div>
+  {% endif %}

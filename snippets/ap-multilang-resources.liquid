@@ -1,0 +1,10 @@
+<style>
+  .ap-multilang-box{width:100%;padding:5px;margin:10px 0 20px;border-bottom:1px solid #ddd}.icon-language{height:11px;width:16px;position:relative}
+</style>
+<script>
+  function ap_multilang_translate_product(a,b,c){$.ajax({url:"http://"+Shopify.shop+"/products/"+a,type:"get",success:function(a){var d=document.implementation.createHTMLDocument("load product");d.documentElement.innerHTML=a;var e=d.getElementsByClassName(b)[0].innerHTML.trim();c.html(e)}})}
+</script>
+{% comment %}
+{{ 'ap_multilang.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'ap_multilang.js' | asset_url }}" async></script>
+{% endcomment %}

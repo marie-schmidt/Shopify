@@ -1,0 +1,100 @@
+{%- if settings.blogsidebar_html_enable -%}
+  <div id="blogsidebar-html" class="sidebarBlog block">
+    {%- if settings.blogsidebar_html_title -%}
+          <h4 class="title_block">{{ settings.blogsidebar_html_title }}</h4>
+    {%- endif -%}
+        <div class="block_content">
+            {%- if settings.blogsidebar_html != blank -%}
+                <div class="effect">
+                    <a href="{{ settings.blogsidebar_html_link }}">
+                        <div class="image">
+                            {{ settings.blogsidebar_html | img_url:'370x' | img_tag: settings.blogsidebar_html_title, "img-responsive" }}
+                        </div>
+                    </a>
+                </div>
+            {%- endif -%}
+            <div class="html_des">
+              {{ settings.blogsidebar_html_des }}
+            </div>
+        </div>
+  </div>
+{%- endif -%}
+{%- if settings.list-blog-re -%}
+<div class="sidebarBlog block block-bloglist">
+    <h4 class="title_block">{{ 'blogs.sidebar.recent_articles' | t }}</h4>
+    <div class="block_content">
+        <ul class="listSidebar list-unstyled">
+            {%- for article in blogs[blog.handle].articles limit:5 -%}
+                <li class="clearfix">
+                    <a href="{{ article.url }}" class="article__grid-image">
+                      {{ article | img_url: '110x' | img_tag: article.title , 'responsive' }}
+                    </a>
+                    <div>
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                    <a class="des_title" href="{{ article.url }}">{{ article.title | truncate: 35 }}</a>
+                    </div>
+                </li>
+            {%- endfor -%}
+        </ul>
+    </div>
+</div>
+{%- endif -%}
+{%- if settings.block-category -%}
+   {% include 'sidebar-categories' %}
+{%- endif -%}
+{%- if settings.show_recent -%}
+{%- include 'sidebar-recentlyviewed' -%}
+{%- endif -%}
+{% if settings.show-list-tag %}
+    {%- if blog.all_tags.size > 0 -%}
+        <div id="categories-blog" class="sidebarBlog block">
+            <h4 class="title_block">{{ 'blogs.sidebar.categories' | t }}</h4>
+            <div class="block_content">
+                <ul class="listBlogTags list-unstyled list-inline">
+                    {%- for tag in blog.all_tags -%}
+                        {%- if current_tags contains tag -%}
+                            <li>{{ tag }}</li>
+                        {%- else -%}
+                            <li>{{ tag | link_to_tag: tag }}</li>
+                        {%- endif -%}
+                    {%- endfor -%}
+                </ul>
+            </div>
+        </div>
+    {%- endif -%}
+{% endif %}
+{% if settings.show_instablog %}
+<style>
+    #instafeedblog a{display: block;width: 33.3333%;float:left;line-height: 0;position: relative;}
+    #instafeedblog img{line-height: 0;}
+</style>
+<div class="block instagram-block text-left">
+     {% if settings.instagram_title_blog != blank %}
+        <h4 class="title_block">
+          {{ settings.instagram_title_blog }}
+        </h4>
+      {% endif %}
+    <div class="block_content "> 
+        <div id="instafeedblog"></div>
+    </div>
+    <script type="text/javascript">
+      $( document ).ready(function() {
+        var feed = new Instafeed({
+            target: 'instafeedblog',
+            clientId: "{{ settings.client-id_blog }}",
+            get: "user",
+            {%- if settings.accessToken_blog != blank -%}
+            accessToken: "{{ settings.accessToken_blog }}",
+            {%- endif -%}
+            {%- if settings.user-id_blog != blank -%}
+            userId:{{ settings.user-id_blog }},
+            {%- endif -%}
+            sortBy: 'most-recent',
+            limit: "{{ settings.instagram_limit_blog }}",
+            resolution: "{{settings.img-size_blog}}",
+        });
+        feed.run();
+      });
+    </script>
+</div>
+{% endif %}

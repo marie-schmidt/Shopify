@@ -1,0 +1,321 @@
+<style>
+  .block-section--{{ section.id }}{
+		{%- if section.settings.custom_space != blank -%}
+			{{ section.settings.custom_space }};
+		{%- endif -%}
+		background-color: {{section.settings.instagram_bg_color }};
+	}
+	.dot__show .dot__show_num{ background-color: {{section.settings.pin_def }};}
+   .dot__show:hover .dot__show_num{ background-color: {{section.settings.pin_hover}};}
+   .dot__show.light .dot__show_num{ background-color: {{section.settings.pin_hover}};}
+   
+</style>
+{% include 'set_layout' %}
+<div class="block-section--{{section.id}} block-look" data-section-id="{{ section.id }}" data-section-type="look">
+	<div  class="block_content {{set-box}} look-wrapper">
+		{% if section.settings.title != blank and  section.settings.sub_des != blank %}
+		    {% include 'style_header' %}
+		    <div class="section-header text-center {{ title_style }} {{ size_title }}">
+		    	{% if section.settings.title != blank %}
+		      <h2><span>{{ section.settings.title }}</span></h2>
+		      {% endif %}
+		      {% if section.settings.sub_des != blank %}
+		      <p class="des-look">{{ section.settings.sub_des }}</p>
+		      {% endif %}
+		    </div>
+	   {% endif %}
+		<div id ="look-{{ section.id }}" class="look__book slick-slider lookbook-page" data-count="1">
+			{%- for block in section.blocks -%}
+					{% capture for_item %}
+						{%- for i in (1..4) -%}
+							  {% assign pro = "product_" | append: i %}
+							  {% assign product_key = block.settings[pro] %}
+							  {% assign product_ = all_products[product_key] %}
+							  
+
+							  {% assign set = "setposition_" | append: i %}
+							  {% assign set_now = block.settings[set] %}
+							  {% assign pos = "position_" | append: i %}
+							  {% assign fix_pos = block.settings[pos] %}
+							  {% if fix_pos == "" and fix_pos != "right" %}{% assign fix_pos = "left" %}{% endif %}
+							  {% if product_key != '' %}
+							  <div class="dot__show dot_count{{i}}" style="{{set_now}}" data-show="{{i}}">
+								 <span class="dot__show_num">{% if section.settings.show_numberplus == "number" or section.settings.show_numberplus == "" %} {{i}} {% elsif section.settings.show_numberplus == "plus" %} <i class="fa fa-plus" style="font-size: 10px;"></i> {% endif %}</span>
+								 <div class="dot__show-ele pos--{{fix_pos}}">
+								 	<div class="dot__show_product text-center">
+								 		<a class="img-product" href="{{product_.url}}"><img class="img-responsive " src="{{ product_.featured_image | product_img_url: '130x' , crop: 'center'   }}" alt="{{ product_.featured_image.alt | escape }}"></a>
+								 		<div class="pop-ifo" >
+										  <h4 class="pop-ifo--title"><a href="{{product_.url}}">{{product_.title | truncatewords: 20}}</a></h4>
+										  {%- assign on_sale = false -%}
+										  {%- if product_.compare_at_price > product_.price -%}
+										  {%- assign on_sale = true -%}
+										  {%- endif -%}
+										  <p>
+											 {%- if on_sale -%}
+											 <span class="old-price product-price">{{ product_.compare_at_price | money }}</span>
+											 {%- endif -%}
+											 <span class="price product-price {% if on_sale %}sale-price{% endif %}">
+												{{ product_.price | money }}
+											 </span>
+										  </p>
+										</div>
+								 	</div>
+								 </div>
+							  </div>
+							  {% endif %}
+						 {%- endfor -%}
+					  {% endcapture %}
+				<div class="look__book-box {{grid_item_width}} look__b{{ block.id }}" >
+					<div class="look__book--item">
+						<div class="look__book--link"   href="#look{{ forloop.index }}">
+							<img src="{{ block.settings.image | img_url: 'master' }}" data-src="{{ img_url }}" data-sizes="auto"  data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" alt="{{block.settings.image.alt}}" class="lazyload img-responsive">
+							{{for_item}}
+						</div>
+					</div>
+				</div>
+			{%- endfor -%}
+		</div>
+	</div>
+</div>
+
+{% schema %}
+  {
+	 "name": "Image Social LookBook",
+	"class": "index-section",
+	 "settings": [
+		{
+		  "type": "textarea",
+		  "id": "custom_space",
+		  "label": "Css Style Section",
+		  "default":"padding-top:100px;padding-bottom:100px;"
+		},
+		{
+		  "type": "header",
+		  "content": "Instagram Photo"
+		},
+		{
+	       "type":      "radio",
+	       "id":        "set_box",
+	       "label":     "Set Layout Section",
+	       "options": [
+	         { "value": "box-container", "label": "Box Container" },
+	         { "value": "box-full", "label": "Box Full" },
+	         { "value": "none", "label": "None" }
+	       ],
+	       "default":   "box-full",
+	       "info":      "Set Layout Section"
+	    },
+		{
+		  "type": "color",
+		  "id": "instagram_bg_color",
+		  "label": "Background color",
+		  "default": "#ffffff"
+		},
+		{
+	      "type": "text",
+	      "id": "title",
+	      "label": "Heading"
+	    },
+	    {
+	      "type": "textarea",
+	      "id": "sub_des",
+	      "label": "Description"
+	    },
+		{
+		  "type": "color",
+		  "id": "pin_def",
+		  "label": "Background Pin",
+		  "default": "#565656"
+		},
+		{
+		  "type": "color",
+		  "id": "pin_hover",
+		  "label": "Background Pin",
+		  "default": "#ff4850"
+		},
+		{
+        "type": "radio",
+        "id": "show_numberplus",
+        "options": [
+          {
+            "value": "number",
+            "label": "Number"
+          },
+          {
+            "value": "plus",
+            "label": "Plus"
+          }
+        ],
+        "default":"number",
+        "label": "Show Number Or Plus"
+   	}
+		],
+		"blocks": [
+			{
+				"type": "image",
+				"name": "Image",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Image"
+					},
+					{
+						"type": "text",
+						"id": "link_insta",
+						"label": "Link Image "
+					},
+					{
+					  "type": "header",
+					  "content": "----- Product 1 -----"
+					},
+					{
+						"type": "product",
+						"id": "product_1",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_1",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_1",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	},
+					{
+					  "type": "header",
+					  "content": "----- Product 2 -----"
+					},
+					{
+						"type": "product",
+						"id": "product_2",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_2",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_2",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	},
+					{
+					  "type": "header",
+					  "content": "----- Product 3 ------"
+					},
+					{
+						"type": "product",
+						"id": "product_3",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_3",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_3",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	},
+					{
+					  "type": "header",
+					  "content": "----- Product 4 ------"
+					},
+					{
+						"type": "product",
+						"id": "product_4",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_4",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_4",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	}
+					
+				]
+			}
+		]
+  }
+{% endschema %}

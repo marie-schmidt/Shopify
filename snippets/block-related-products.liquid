@@ -1,0 +1,54 @@
+{% if collection == null or collection.handle == 'frontpage' or collection.handle == 'all' %}
+{% assign found_a_collection = false %}
+{% for c in product.collections %}
+	{% if found_a_collection == false and c.handle != 'frontpage' and c.handle != 'all' and c.all_products_count > 1 %}
+		{% assign found_a_collection = true %}
+		{% assign collection = c %}
+	{% endif %}
+{% endfor %}
+{% endif %}
+
+{% comment %}
+  If we have a relevant collection.
+{% endcomment %}
+
+
+  {% capture related_items %}
+	{% assign collection_produclists = collection.products %}
+    {% for product in collection_produclists limit:product_in_tab %}
+		{% unless current_pro == product.id %}
+    		{% include 'product-grid-item' %}
+		{% endunless %}
+    {% endfor %}
+  {% endcapture %}
+
+  {% assign related_items = related_items | trim %}
+
+  {% unless related_items == blank %}
+      {%- if section.settings.title != blank -%}
+      {% include 'style_header' %}
+      <div class="section-header text-center {{ title_style }} {{ size_title }}">
+        <h2><span>{{ section.settings.title }}</span></h2>
+      </div>
+    {%- endif -%}
+    <div  class=" products_block product_list_owl" >
+      <div id="Productlists-{{ section.id }}" class="slick_carousel row" data-toshow="{{ columns_product }}" 
+         data-scroll="{{ slidesToScroll }}" 
+         data-row="{{ row }}"
+         data-arrows="{{ enable_nav }}"
+         data-dot="{{ enable_dot }}"
+         data-laptop="{{item_laptop}}"
+         data-table="{{item_table}}"
+         data-phonemin="{{item_phone_min}}"
+         {% if number_interval > 0 %}
+         data-play="{{ number_interval }}" 
+         data-autoplay="true" 
+         {% else %} 
+         data-autoplay="false" 
+         {% endif %}>
+        {{ related_items }}
+      </div>
+    </div>
+
+  {% endunless %}
+     

@@ -1,0 +1,227 @@
+<div data-section-id="{{ section.id }}" data-section-type="header-section" >
+  <header id="header" class="ap-{{ section.settings.header-template-layout }} {% if section.settings.header_bg_transparent_enable%}header-bg-transparent{% endif %}">
+    {%- if section.settings.show_announcement -%}
+      {%- if section.settings.home_page_only == false or template.name == 'index' -%}
+          {% capture announcement %}.announcement-bar {background-color: {{ section.settings.announcement_color_bg }};}.page-width,.announcement-bar--link,.announcement-bar__message,.announcement-bar__close{color: {{ section.settings.announcement_color_text }};}.announcement-bar--link{border-bottom:1px solid {{ section.settings.announcement_color_text }};}.announcement-bar--link:hover {color: {{ section.settings.announcement_color_text_hover }};}{% endcapture %}
+          {% assign css = css | append: announcement %}
+        {%- if section.settings.announcement_text != blank -%}
+          <div class="announcement-bar announcement-bar__message">
+               <p class="page-width">
+               {%- if section.settings.announcement_icon != blank -%}
+                 {{ section.settings.announcement_icon }}
+               {%- endif -%}
+               {{ section.settings.announcement_text}}
+               {%- if section.settings.announcement_link != blank -%}
+                  <a href="{{ section.settings.announcement_link }}" class="announcement-bar--link">{{ section.settings.announcement_link_text }}</a>
+               {%- endif -%}
+             </p>
+          <a class="announcement-bar__close btn btn--clear" aria-expanded="true" href="javascript:;">{% include 'icon-close' %}</a>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+      <script>
+        var css = "{{ css }}",
+            head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+        style.type = 'text/css';
+        if (style.styleSheet){
+          style.styleSheet.cssText = css;
+        } else {
+          style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
+
+         $(document).ready(function() {
+            var date = new Date();
+            var minutes = {{ section.settings.noti_cookie }};
+            date.setTime(date.getTime() + (minutes * 60 * 1000));
+            var $noti_cookie = $.cookie('popup_top_cookie');
+            if ($noti_cookie == undefined){
+              $('.announcement-bar').slideDown();
+              $('.announcement-bar .btn--clear').click(function(e) {
+                $('.announcement-bar').slideUp();
+                $.cookie('popup_top_cookie', 'yes', { path: '/', expires: date });
+              });
+            }
+         });
+      </script>
+    {%- endif -%}
+    <div class="page-content">
+  	{% include section.settings.header-template-layout %}
+    </div>
+  </header>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+      {
+        "type": "select",
+        "id": "header-template-layout",
+        "label": "Layout Header",
+        "default": "header-template1",
+        "options": [
+          {
+          "value": "header-template1",
+          "label": "Header 1 Default"
+          },
+          {
+          "value": "header-template2",
+          "label": "Header 2 Container"
+          },
+          {
+          "value": "header-template3",
+          "label": "Header 3 Logo Left"
+          },
+          {
+          "value": "header-template4",
+          "label": "Header 4 Logo near Menu"
+          },
+          {
+          "value": "header-template5",
+          "label": "Header 5 Header Transparent"
+          },
+          {
+          "value": "header-template6",
+          "label": "Header 6 Creative"
+          },
+          {
+          "value": "header-template7",
+          "label": "Header 7 Logo Center Menu"
+          },
+          {
+          "value": "header-template8",
+          "label": "Header 8 Logo Top"
+          },
+          {
+          "value": "header-template9",
+          "label": "Header 9 Logo Top Center"
+          },
+          {
+          "value": "header-template10",
+          "label": "Header 10 Menu Sidebar"
+          },
+          {
+          "value": "header-template11",
+          "label": "Header 11 OverLay"
+          }
+        ],
+        "info": "Select template Header"
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo image"
+      },
+      {
+        "type": "text",
+        "id": "logo_max_width",
+        "label": "Custom logo width (in pixels)",
+        "default": "123"
+      },
+      
+      {
+        "type": "header",
+        "content": "----- Header 6 -----"
+      },
+      {
+          "type": "color",
+          "id": "colortopbar",
+          "label": "Background Top Bar",
+         "default": "#fafafa"
+      },
+	    {
+        "type": "text",
+        "id": "name_menu",
+        "label": "Name Menu Right"
+      },
+      {
+        "type": "text",
+        "id": "enable_banner_run_top",
+        "label": "Text Top bar"
+      },
+      {
+        "type": "header",
+        "content": "----- Header 7 -----"
+      },
+      {
+        "type": "text",
+        "id": "margin-left-cw",
+        "label": "Margin Left Logo",
+        "default":"300px"
+      },
+      {
+      "type": "header",
+      "content": "Notification"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announcement",
+      "label": "Show notification",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "home_page_only",
+      "label": "Home page only",
+      "default": true
+    },
+    {
+        "type": "text",
+        "id": "noti_cookie",
+        "label": "Notification Time Cookie",
+        "default": "1",
+        "info": "Time to popup show again (Minutes)"
+      },
+    {
+      "type": "textarea",
+      "id": "announcement_icon",
+      "label": "Icon",
+      "info" : "Icon class font http://fontawesome.io/icons/ "
+    },
+    {
+      "type": "textarea",
+      "id": "announcement_text",
+      "label": "notification text",
+      "default": "Announce something here"
+    },
+    {
+      "type": "text",
+      "id": "announcement_link_text",
+      "label": "notification Link name",
+      "default": "shop now"
+    },
+    {
+      "type": "url",
+      "id": "announcement_link",
+      "label": "notification link",
+      "info": "Optional"
+    },
+    
+    {
+      "type": "color",
+      "id": "announcement_color_bg",
+      "label": "Bar",
+      "default": "#7796A8"
+    },
+    {
+      "type": "color",
+      "id": "announcement_color_text",
+      "label": "Text",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "announcement_color_text_hover",
+      "label": "Hover Link",
+      "default": "#222"
+    }
+    
+  ]
+}
+{% endschema %}

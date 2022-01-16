@@ -1,0 +1,117 @@
+{% include 'set_layout' %}
+<div class="block_content {{set-box}} instagram-block {% if section.settings.style_insta == 'style_2' %} insata_style2 {% endif %}">
+	<div id="instafeed" class="row">
+		{% if section.settings.style_insta == 'style_2' %}
+		<div class="grid-sizer col-md-3 col-sm-6 col-xs-6"></div>
+		{% endif %}
+	</div>
+	{% if section.settings.linkall_instagram != blank %}
+	<a class="link-instagram" href="{{ section.settings.urlto_instagram }}" title="{{ section.settings.linkall_instagram | strip_html }}" target="_blank" ><i class="fa fa-instagram"></i>
+	{{ section.settings.linkall_instagram }}</a>     
+	{% endif %}
+</div>
+ 
+ {% if section.settings.enable_like_insta == 'like' %}
+	{% assign instafeed_template = '<a href="{{link}}"><img src="{{image}}" /><div class="content__insta"><div class="box__insta"><span><i class="fa fa-heart-o"></i>{{likes}}</span></div></div></a>' %}
+ {% elsif section.settings.enable_like_insta == 'comment' %}
+	{% assign instafeed_template = '<a href="{{link}}"><img src="{{image}}" /><div class="content__insta"><div class="box__insta"><span><i class="fa fa-comment-o"></i>{{comments}}</span></div></div></a>' %}
+ {% elsif section.settings.enable_like_insta == 'des' %}
+	{% assign instafeed_template = '<a href="{{link}}"><img src="{{image}}" /><div class="content__insta"><div class="box__insta"><div class="content__insta-des">{{caption}}</div></div></div></a>' %}
+ {% elsif section.settings.enable_like_insta == 'all' %}
+	{% assign instafeed_template = '<a href="{{link}}"><img src="{{image}}" /><div class="content__insta"><div class="box__insta"><span><i class="fa fa-heart-o"></i>{{likes}}</span><span><i class="fa fa-comment-o"></i>{{comments}}</span><div class="content__insta-des">{{caption}}</div></div></div></a>' %}
+ {% elsif section.settings.enable_like_insta == '' %}
+	{% assign instafeed_template = '<a href="{{link}}"><img src="{{image}}" /><div class="content__insta"><div class="box__insta"><span><i class="fa fa-heart-o"></i>{{likes}}</span><span><i class="fa fa-comment-o"></i>{{comments}}</span><div class="content__insta-des">{{caption}}</div></div></div></a>' %}
+ {% elsif section.settings.enable_like_insta == 'likecomment' %}
+	{% assign instafeed_template = '<a href="{{link}}"><img src="{{image}}" /><div class="content__insta"><div class="box__insta"><span><i class="fa fa-heart-o"></i>{{likes}}</span><span><i class="fa fa-comment-o"></i>{{comments}}</span></div></div></a>' %}
+{% endif %}
+{% if section.settings.style_insta == 'style_2' %}
+	{% assign colProduct = 12 | divided_by:section.settings.columns_image %}
+	  {% if section.settings.column_image == 5 %}
+	  		{% capture grid_item_width %} col-md-2-4 col-xs-6 col-sp-12 {% endcapture %}
+	  {% else %}
+	  		{% capture grid_item_width %} col-md-{{ colProduct }} col-xs-6 col-sp-12 {% endcapture %}
+  {% endif %}
+{% endif %}
+{{ 'instafeed.min.js' | asset_url | script_tag }}
+<script type="text/javascript">
+	$(document).ready(function() {
+		var feed = new Instafeed({
+				clientId: "{{ section.settings.client-id }}",
+				get: "user",
+				{%- if section.settings.accessToken != blank -%}
+				accessToken: "{{ section.settings.accessToken }}",
+				{%- endif -%}
+				{%- if section.settings.user-id != blank -%}
+				userId:{{ section.settings.user-id }},
+				{%- endif -%}
+				limit: "{{ section.settings.instagram_limit }}",
+				resolution: "{{section.settings.img-size}}",
+				sortBy: 'most-recent',
+				template: '<div class="{{grid_item_width}} grid__item">{{ instafeed_template }}</div>',
+	         before:function(){
+	        	   $('.instagram-block').addClass('loading');
+	         },
+				after: function() {
+					$('.instagram-block').removeClass('loading');
+					{% if section.settings.style_insta =='' or section.settings.style_insta =='style_1' %}
+						jQuery("#instafeed").slick({
+							slidesToShow: {{section.settings.columns_image}},
+							slidesToScroll: 1,
+							dots: true,
+							arrows: {% if section.settings.enable_dot %} true {% else %} false {% endif %},
+							responsive: [{
+										breakpoint: 1200,
+										settings: {
+											slidesToShow: 5,
+											slidesToScroll: 1,
+										}
+								  },
+								  {
+										breakpoint: 991,
+										settings: {
+											slidesToShow: 3,
+											slidesToScroll: 1,
+										}
+								  },
+								  {
+										breakpoint: 767,
+										settings: {
+											slidesToShow: 3,
+											slidesToScroll: 1,
+										}
+								  },
+								  {
+										breakpoint: 480,
+										settings: {
+											slidesToShow: 2,
+											slidesToScroll: 1,
+										}
+								  },
+								  {
+										breakpoint: 320,
+										settings: {
+											slidesToShow: 1,
+											slidesToScroll: 1,
+										}
+								  }
+							 ]
+						});
+					{% elsif  section.settings.style_insta == 'style_2' %}
+						var $grid = $('#instafeed').isotope({
+			            itemSelector: '.grid__item',
+			            percentPosition: true,
+			            masonry: {
+			              columnWidth: '.grid-sizer',
+			              isAnimated: true
+			            }
+			         });
+			         // layout Isotope after each image loads
+			         $grid.imagesLoaded().progress( function() {
+			            $grid.isotope('layout');
+			         });
+		         {% endif %}
+			  }
+		 });
+		 feed.run();
+	});
+</script>

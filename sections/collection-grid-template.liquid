@@ -1,0 +1,334 @@
+{%- include 'set_layout' -%}
+{% assign column_center = 'col-xs-12 col-sm-12 col-md-12' %}
+{%- include 'breadcrumb' -%}
+<section id="columns" class="columns-container">
+  <div class="{{set-box}}">
+    
+    <div class="row">
+      
+      {% if section.settings.collection_product_per_page != blank %}
+      {% assign product_per_page = section.settings.collection_product_per_page | plus: 0 %}
+      {% else %}
+      {% assign product_per_page = 12 %}
+      {% endif %}
+      
+      {% if section.settings.layout-grid-list == 'grid' %}
+      {% assign columns_product_collections = section.settings.col_products | plus: 0 %}
+      {% endif %}
+      
+      {% if settings.apollo_count_down_enable and settings.apollo_count_down_collections %}
+      {% assign dealTime = settings.home_productdeal_time | split: ' ' | join: ' ' | split: ' ' %}
+      {% else %}
+      {% assign dealTime = false %}
+      {% endif %}
+      
+      {% if section.settings.layout-grid-list == 'grid' %}
+      {% assign colProduct = 12 | divided_by:columns_product_collections %}
+      {% if columns_product_collections == 5 %}
+      {% capture grid_item_width %}col-md-2-4 col-xs-6 col-sm-4 col-sp-6{% endcapture %}
+      {% else %}
+      {% capture grid_item_width %}col-md-{{ colProduct }} col-sm-4 col-xs-6 col-sp-6{% endcapture %}
+      {% endif %}
+      {% endif %}
+      
+      {% assign product_per_page = product_per_page | plus: 0 %}
+      {% assign all_products_count = collection.all_products_count | plus: 0 %}
+      {%if product_per_page > all_products_count %}
+      {% assign product_per_page = collection.all_products_count %}
+      {% endif %}
+
+      <script>
+        $( document ).ready(function() {
+          countproducttop(window.location.href);
+        });
+      </script>
+      
+      {% if section.settings.layout-grid-list == 'grid' %}
+      <div id="center_column" class="center_column col-xs-12 {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}{% unless settings.sidebar_fixed %} {% if settings.on-off-sidebar %} col-sm-12 col-md-9  {% if section.settings.set_box == 'box-container' %} col-lg-9 {% else %} col-lg-9-6 {% endif %} {% endif %} {% endunless %}">
+        
+        <div class="category-heading clearfix">
+          <div class="sortPagiBar clearfix row">
+            <div class="col-md-6 col-sm-3 col-xs-5 col-sp-4 nopadding">
+              {% include 'collection-views' %}
+            </div>          
+            <div class="col-md-6 col-sm-9 col-xs-7 col-sp-8 nopadding">
+              {% include 'collection-sorting' %}
+            </div>
+            {% if settings.on-off-filter and settings.filter-position == "top" %}
+              <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="top-filter">
+                  {% include 'filter-top' %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        {% paginate collection.products by product_per_page %}
+        <div id="product_list" class="product-border product_list grid grid_{{section.settings.col_products}}">
+            <div id="loading" class="loading_site" style="display: none;"><span class="loading-icon"><i class="cir"></i><i class="cir"></i><i class="cir"></i></span></div>
+           <div class="row row-flex productarray">
+           {% for product in collection.products %}
+           {% include 'product-grid-item' %}
+           {% else %}
+           <div class="warring col-xs-12">
+              <p>{{ 'collections.general.no_matches' | t }}</p>
+           </div>
+           {% endfor %}
+           {% assign dealTime = false %}
+            {% if section.settings.enable_loadmore_option != 'pagi' %}
+             {% if paginate.next %}
+               <div id="loadmore" style="display: none;"><p>&darr; <a href="{{ paginate.next.url }}">{{ paginate.next.title }}</a></p></div>   
+               
+             {% else %}
+               <div id="nomore" class="text-center">
+                  <div class="btn btn-outline-inverse">No More Product</div>
+               </div>
+               {% endif %}
+            {% endif %}
+          </div>
+          {% if section.settings.enable_loadmore_option != 'pagi' %}
+           <div id="product-list-foot"></div>
+           <div style="display:none;" id="loadingprod"><span class="loading-icon"><i class="cir"></i><i class="cir"></i><i class="cir"></i></span></div>
+          {% endif %}
+          {% if section.settings.enable_loadmore_option == "click" %}
+            <div class="text-center">
+               {% if paginate.next %}
+                 <div id="loadmore-button" class="btn btn-outline-inverse">Load More Product</div>
+               {% endif %}
+            </div>
+         {% endif %}
+        </div>
+        <div class="pagi-block" {% if section.settings.enable_loadmore_option != 'pagi' %} style="display:none;" {% endif %}>
+          <div class="row no-margin">
+            <div class="col-md-6 col-sm-6 col-xs-12 no-padding">
+              <div class=" pagination-top-showing" data-per-page="{{product_per_page}}" data-all-product="{{ collection.all_products_count }}" data-content="{{ 'collections.general.show_item_per_page' | t }}"></div>
+            </div>
+            {% if paginate.pages > 1 %}
+            <div class="col-md-6 col-sm-6 col-xs-12 no-padding">
+              <div class="content_sortPagiBar">
+                {% include 'pagination-custom' %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% endpaginate %}
+      </div>
+      {% else %}
+      <div id="center_column" class="center_column col-xs-12 {% if settings.on-off-sidebar  %} col-sm-8 col-md-9" {% endif %}>
+          <div class="category-heading clearfix">
+              <div class="sortPagiBar clearfix row">
+                  <div class="col-md-6 col-sm-6 col-xs-4">
+                      {% include 'collection-views' %}
+                  </div>
+                  <div class="col-md-6 col-sm-6 col-xs-8">
+                    	{% include 'collection-sorting' %}
+                  </div>
+              </div>
+          </div>
+          {% paginate collection.products by product_per_page %}
+              <div id="product_list" class="product_list list">
+                	<div class="row">
+                      {% if settings.apollo_count_down_enable and settings.apollo_count_down_collections %}
+                          {% assign dealTime = settings.home_productdeal_time | split: ' ' | join: ' ' | split: ' ' %}
+                      {% endif %}
+                      {% for product in collection.products %}
+                          {% include 'product-list-item' %}
+                      {% else %}
+                          <div class="warring col-xs-12">
+                              <p>{{ 'collections.general.no_matches' | t }}</p>
+                          </div>
+                      {% endfor %}
+                      {% assign dealTime = false %}
+                	</div>
+              </div>
+              <div class=" pagination-top-showing" data-per-page="{{product_per_page}}" data-all-product="{{ collection.all_products_count }}" data-content="{{ 'collections.general.show_item_per_page' | t }}"></div>
+              {% if paginate.pages > 1 %}
+              <div class="content_sortPagiBar">
+                {% include 'pagination-custom' %}
+              </div>
+              {% endif %}
+          {% endpaginate %}
+      </div>
+      {% endif %}
+      {% if settings.on-off-sidebar %}
+      <aside>
+        <div {% if section.settings.layout-sidebar == 'left' %}id="left_column" {% else section.settings.layout-sidebar == 'right'%}id="right_column" {% endif %} class=" sidebar col-xs-12 col-sm-4 col-md-3 {% if section.settings.set_box == 'box-container' %} col-lg-3 {% else %} col-lg-2-4 {% endif %}  {% if section.settings.layout-sidebar == 'left' %}left_column pull-left{% else section.settings.layout-sidebar == 'right' %}right_column {% endif %} {% if settings.sidebar_fixed %} sidebar_fixed {% endif %} sidebar-collection">
+          {% include 'sidebar' %}
+        </div>
+        <div class="overlay_sidebar"></div>
+      </aside>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% if section.settings.enable_loadmore_option == 'scroll' or section.settings.enable_loadmore_option == 'click' %}
+    <script>
+      var busy = false;
+      function loading(){
+              
+        scrollNode = $('#loadmore').last(); 
+        scrollURL = $('#loadmore p a').last().attr("href");
+        if(scrollNode.length != 0){
+          $('#loadingprod').show();
+        }
+
+        if(scrollNode.length > 0){
+          $.ajax({
+            type: 'GET',
+            url: scrollURL,
+            beforeSend: function() {
+              scrollNode.remove();
+
+            },
+            success: function(data) {
+              var filteredData = $(data).find(".productarray");
+              filteredData.insertBefore( $("#product-list-foot") ); 
+              busy = false;
+              
+              if($(data).find('#nomore').length > 0){
+           	   $('#loadmore-button').hide();
+              }
+              $('#loadingprod').hide();
+              $('.wishlist-btn').bind('click',function(selector) {
+                selector.preventDefault();
+                updateWishlist(this);
+                animateWishlist(this);
+               
+                  });
+                getfirstvalue();
+                activateItemsInWishlist();
+            },
+
+            dataType: "html"
+          });
+        }
+      }
+      {% if section.settings.enable_loadmore_option == 'scroll' %}
+      $(window).scroll(function() {
+        var winH = $(window).height();
+        var secH = $('#product_list.product_list').height();
+        var scroll = $(window).scrollTop();
+
+        var totalH = winH+scroll;
+        if(totalH > secH && !busy){
+          busy = true;
+          loading();
+        }
+      });
+      {% endif %}
+      {% if section.settings.enable_loadmore_option == 'click' %}
+       if ($("#loadmore-button").length > 0) {
+             $("#loadmore-button").click(function(event) {
+                 if (!$(this).hasClass("hide")) {
+                     loading();
+                 }
+             })
+         }
+      {% endif %}
+    </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Collection pages",
+  "settings": [
+   {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "box-full",
+       "info":      "Set Layout Section"
+    },
+	 {
+      "type": "select",
+      "id": "layout-grid-list",
+      "label": "Layout Sidebar",
+      "default": "grid",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        }
+      ]
+     },
+     {
+        "type": "select",
+        "id": "layout-sidebar",
+        "label": "Layout Sidebar",
+        "default": "left",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ]
+     },
+     {
+        "type": "select",
+        "id": "col_products",
+        "label": "Product per row",
+        "default": "4",
+        "info": "Only applies to products list grid(Ex: 2, 3, 4, 5, 6)",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          }
+        ]
+     },
+     {
+        "type": "text",
+        "id": "collection_product_per_page",
+        "label": "Product per page",
+        "default": "12"
+      },
+      {
+        "type": "select",
+        "id": "enable_loadmore_option",
+        "label": "Enable Loadmore Ajax",
+        "options": [
+           {
+             "value": "scroll",
+             "label": "Scroll"
+           },
+           {
+             "value": "click",
+             "label": "Click"
+           },
+           {
+             "value": "pagi",
+             "label": "Pagination"
+           }
+         ],
+         "default":"pagi"
+    
+      }
+  ]
+}
+{% endschema %}

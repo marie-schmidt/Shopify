@@ -1,0 +1,464 @@
+<style>
+  .block-section--{{ section.id }}{
+		{%- if section.settings.custom_space != blank -%}
+			{{ section.settings.custom_space }};
+		{%- endif -%}
+		background-color: {{section.settings.instagram_bg_color }};
+	}
+	.dot__show .dot__show_num{ background-color: {{section.settings.pin_def }}; color:{{section.settings.color_text}};}
+   .dot__show:hover .dot__show_num{ background-color: {{section.settings.pin_hover}};color:{{section.settings.color_text_hover}};}
+   .dot__show.light .dot__show_num{ background-color: {{section.settings.pin_hover}};color:{{section.settings.color_text_hover}};}
+</style>
+ {% if section.settings.layout-grid-list == 'grid' %}
+  {% assign colProduct = 12 | divided_by:section.settings.column_image %}
+  {% if section.settings.column_image == 5 %}
+  {% capture grid_item_width %}col-md-2-4 col-xs-6 col-sp-12 col-sm-12{% endcapture %}
+  {% else %}
+  {% capture grid_item_width %}col-md-{{ colProduct }} col-xs-6 col-sp-12 col-sm-12{% endcapture %}
+  {% endif %}
+{% endif %}
+{% include 'set_layout' %}
+<div class="block-section--{{section.id}}" data-section-id="{{ section.id }}" data-section-type="lookhome" {% if section.settings.custom_space %} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }};" {% endif %}>
+	<div  class="block_content {{set-box}} lookhome-wrapper">
+		{% if section.settings.title != blank %}
+		    {% include 'style_header' %}
+		    <div class="section-header text-center {{ title_style }} {{ size_title }}">
+		      <h2><span>{{ section.settings.title }}</span></h2>
+		    </div>
+	   {% endif %}
+		<div  {% if section.settings.layout-grid-list == 'carousel' %} id="Lookhome-{{ section.id }}" {% endif %} class="look__book row slick-slider  {% if section.settings.layout-grid-list == 'carousel' %} slick-hide {% endif %}" data-col="{{section.settings.column_image }}" data-arrows="{{ section.settings.enable_nav }}" data-dot="{{ section.settings.enable_dot }}" >
+			{%- for block in section.blocks -%}
+					{% capture for_item %}
+						{%- for i in (1..4) -%}
+							  {% assign pro = "product_" | append: i %}
+							  {% assign product_key = block.settings[pro] %}
+							  {% assign product_ = all_products[product_key] %}
+							  
+
+							  {% assign set = "setposition_" | append: i %}
+							  {% assign set_now = block.settings[set] %}
+							  {% assign pos = "position_" | append: i %}
+							  {% assign fix_pos = block.settings[pos] %}
+							  {% if fix_pos == "" and fix_pos != "right" %}{% assign fix_pos = "left" %}{% endif %}
+							  {% if product_key != '' %}
+							  <div class="dot__show dot_count{{i}}" style="{{set_now}}" data-show="{{i}}">
+								 <span class="dot__show_num">{{i}}</span>
+								 <div class="dot__show-ele pos--{{fix_pos}}">
+								 	<div class="dot__show_product text-center">
+								 		<a class="img-product" href="{{product_.url}}"><img class="img-responsive " src="{{ product_.featured_image | product_img_url: '130x' , crop: 'center'   }}" alt="{{ product_.featured_image.alt | escape }}"></a>
+								 		<div class="pop-ifo" >
+										  <h4 class="pop-ifo--title"><a href="{{product_.url}}">{{product_.title | truncatewords: 20}}</a></h4>
+										  {%- assign on_sale = false -%}
+										  {%- if product_.compare_at_price > product_.price -%}
+										  {%- assign on_sale = true -%}
+										  {%- endif -%}
+										  <p>
+											 {%- if on_sale -%}
+											 <span class="old-price product-price">{{ product_.compare_at_price | money }}</span>
+											 {%- endif -%}
+											 <span class="price product-price {% if on_sale %}sale-price{% endif %}">
+												{{ product_.price | money }}
+											 </span>
+										  </p>
+										</div>
+								 	</div>
+								 </div>
+							  </div>
+							  {% endif %}
+						 {%- endfor -%}
+					  {% endcapture %}
+				<div class="look__book-box {{grid_item_width}} look__h{{ block.id }}"  >
+					<div class="look__book--item">
+						<div class="look__book--link"   href="#look{{ forloop.index }}">
+							{%- assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+							<img 
+							src="{{ block.settings.image | img_url: 'master' }}" 
+							data-src="{{ img_url }}" 
+							data-sizes="auto"  
+							data-src="{{ img_url }}" 
+							data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" alt="" class="lazyload img-responsive">
+							{{for_item}}
+						</div>
+						<div class="popup clearfix" id="look{{ forloop.index }}" style="display: none;">
+							<div class="row">
+							<div class="col-md-8 col-xs-12">
+										 <div class="popup--image">
+								<img src="{{ block.settings.image | img_url: '700x', crop: 'center' }}" alt="">
+											{{for_item}}
+										 </div>
+							</div>
+							<div class="col-md-4 col-xs-12">
+								<div class="list-product row row-flex">
+								{%- for i in (1..4) -%}
+								{% assign pro = "product_" | append: i %}
+								{% assign product_key = block.settings[pro] %}
+								{% assign product_ = all_products[product_key] %}	
+									{% if product_key != '' %}
+										<div class="col-xs-6 pop-products" data-product={{i}}>
+											<div class="product-item  item{{i}}" >
+											<a class="img-product" href="{{product_.url}}"><span>{{i}}</span><img class="img-responsive " src="{{ product_.featured_image | product_img_url: '200x234' , crop: 'center'   }}" alt="{{ product_.featured_image.alt | escape }}"></a>
+											<div class="pop-ifo" >
+											  <h4 class="pop-ifo--title"><a href="{{product_.url}}">{{product_.title | truncatewords: 20}}</a></h4>
+											  {%- assign on_sale = false -%}
+											  {%- if product_.compare_at_price > product_.price -%}
+											  {%- assign on_sale = true -%}
+											  {%- endif -%}
+											  <p>
+												 {%- if on_sale -%}
+												 <span class="old-price product-price">{{ product_.compare_at_price | money }}</span>
+												 {%- endif -%}
+												 <span class="price product-price {% if on_sale %}sale-price{% endif %}">
+													{{ product_.price | money }}
+												 </span>
+											  </p>
+											</div>
+										 </div>
+										</div>
+								{% endif %}
+								{%- endfor -%}
+								</div>
+								{% if block.settings.des_image != blank %}
+								<div class="description-image">
+									{{ block.settings.des_image }}
+								</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					</div>
+				</div>
+			{%- endfor -%}
+		</div>
+	</div>
+</div>
+<script>
+	 $(window).ready(function() {
+		{% if section.settings.enable_popup %}
+			$(window).bind("load resize", function() {
+			    var width = $(window).width();
+			    if (width >= 1024) {
+			        $(".look__book--link").fancybox({
+						maxWidth : 1000,
+						maxHeight   : 700,
+						fitToView   : false,
+						width    : '80%',
+						height      : '500',
+						autoSize : false,
+						closeClick  : false,
+						padding: 30,
+						'transitionIn'  : 'elastic',
+						'transitionOut' : 'elastic',
+					});
+			    }
+			});
+		{% endif %}
+		// animation hover
+		$('.popup--image .dot__show').each(function(){
+			var index = $(this).index();
+		  $( this ).hover(
+			function() {
+				$(".popup--image .dot_count" + index).addClass("light");
+				$(".product-item.item" + index).addClass('light');
+			}, 
+			function() {
+					$(".popup--image .dot_count" + index).removeClass("light");
+					$(".product-item.item" + index).removeClass('light');
+				}
+			);
+			
+		});
+		$('.list-product .pop-products').each(function(){
+			var index = $(this).attr("data-product");
+			$(this).hover(
+			function() {
+				$(".product-item.item" + index).addClass('light');
+				$(".popup--image .dot_count" + index).addClass("light");
+			}, 
+			function() {
+					$(".product-item.item" + index).removeClass('light');
+					$(".popup--image .dot_count" + index).removeClass("light");
+				}
+			);
+		});
+	});
+</script>
+
+{% schema %}
+  {
+	 "name": "Image Social LookBook",
+	"class": "index-section",
+	 "settings": [
+		{
+		  "type": "textarea",
+		  "id": "custom_space",
+		  "label": "Css Style Section",
+		  "default":"padding-top:100px;padding-bottom:100px;"
+		},
+		{
+		  "type": "header",
+		  "content": "Instagram Photo"
+		},
+		{
+	       "type":      "radio",
+	       "id":        "set_box",
+	       "label":     "Set Layout Section",
+	       "options": [
+	         { "value": "box-container", "label": "Box Container" },
+	         { "value": "box-full", "label": "Box Full" },
+	         { "value": "none", "label": "None" }
+	       ],
+	       "default":   "box-full",
+	       "info":      "Set Layout Section"
+	    },
+		{
+		  "type": "color",
+		  "id": "instagram_bg_color",
+		  "label": "Background color",
+		  "default": "#ffffff"
+		},
+		{
+	      "type": "text",
+	      "id": "title",
+	      "label": "Heading"
+	    },
+		{
+		  "type": "color",
+		  "id": "pin_def",
+		  "label": "Background Pin",
+		  "default": "#565656"
+		},
+		{
+		  "type": "color",
+		  "id": "color_text",
+		  "label": "Color Text",
+		  "default": "#222"
+		},
+		{
+		  "type": "color",
+		  "id": "color_text_hover",
+		  "label": "Color Text Hover",
+		  "default": "#fff"
+		},
+		{
+		  "type": "color",
+		  "id": "pin_hover",
+		  "label": "Background Pin",
+		  "default": "#ff4850"
+		},
+		{
+		  "type": "text",
+		  "id": "column_image",
+		  "label": "Column Image",
+		  "default":"2"
+		},
+		{
+	        "type": "radio",
+	        "id": "layout-grid-list",
+	        "label": "Layout List",
+	        "options": [
+	        	 {
+	            "value": "grid",
+	            "label": "Grid"
+	          },
+	          {
+	            "value": "carousel",
+	            "label": "Carousel"
+	          }
+	        ]
+	     },
+		{
+		  "type": "checkbox",
+		  "id": "enable_popup",
+		  "label": "Enable Popup Image"
+		},
+		{
+          "type": "checkbox",
+          "id": "enable_dot",
+          "label": "Enable Dot"
+        },
+	      {
+	      "type": "checkbox",
+	      "id": "enable_nav",
+	      "label": "Enable Arrows"
+	      }
+		],
+		"blocks": [
+			{
+				"type": "image",
+				"name": "Image",
+				"settings": [
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Image"
+					},
+					{
+						"type": "text",
+						"id": "link_insta",
+						"label": "Link Image Instagram"
+					},
+					{
+						"type": "richtext",
+						"id": "des_image",
+						"label": "Description For Image"
+					},
+					{
+					  "type": "header",
+					  "content": "----- Product 1 -----"
+					},
+					{
+						"type": "product",
+						"id": "product_1",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_1",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_1",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	},
+					{
+					  "type": "header",
+					  "content": "----- Product 2 -----"
+					},
+					{
+						"type": "product",
+						"id": "product_2",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_2",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_2",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	},
+					{
+					  "type": "header",
+					  "content": "----- Product 3 ------"
+					},
+					{
+						"type": "product",
+						"id": "product_3",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_3",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_3",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	},
+					{
+					  "type": "header",
+					  "content": "----- Product 4 ------"
+					},
+					{
+						"type": "product",
+						"id": "product_4",
+						"label": "Product"
+					},
+					{
+						"type": "text",
+						"id": "setposition_4",
+						"label": "Set Position for dot"
+					},
+					{
+				        "type": "radio",
+				        "id": "position_4",
+				        "options": [
+				          {
+				            "value": "left",
+				            "label": "Left"
+				          },
+				          {
+				            "value": "right",
+				            "label": "Right"
+				          },
+				          {
+				            "value": "top",
+				            "label": "Top"
+				          },
+				          {
+				            "value": "bottom",
+				            "label": "Bottom"
+				          }
+				        ],
+				        "label": "Show Tool"
+			      	}
+					
+				]
+			}
+		],
+		"presets": [
+			 {
+			 "name": "Image Social LookBook",
+			 "category": "Image"
+			 }
+		]
+  }
+{% endschema %}

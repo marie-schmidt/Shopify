@@ -1,0 +1,95 @@
+{% if section.settings.enable_block_top %}
+	<div class="top_about mg-b">
+		<div class="row">
+			  <div class="col-md-6 com-sm-6 col-xs-12">
+			      {% if section.settings.image_abouts != blank %}
+			        {{ section.settings.image_abouts | img_url: 'master' | img_tag: section.settings.image_abouts.alt, 'img-responsive' }}
+			      {% else %}
+			        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+			      {% endif %}
+			  </div>
+		  <div class="col-md-6 com-sm-6 col-xs-12">
+		  		<div class="block--about">
+		  			{% if section.settings.title_page_about_1 != blank %}
+		          <h4 class="page-subheading">{{ section.settings.title_page_about_1 }}</h4>
+		        {% endif %}
+		        {% if section.settings.des_page_about_1 != blank %}
+		          <div class="block_content">
+		            {{ section.settings.des_page_about_1 }}
+		          </div>
+		        {% endif %}
+		  		</div>
+  					<div class="block--about">
+			  			{% if section.settings.title_page_about_2 != blank %}
+			          <h4 class="page-subheading">{{ section.settings.title_page_about_2 }}</h4>
+			        {% endif %}
+			        {% if section.settings.des_page_about_2 != blank %}
+			          <div class="block_content">
+			            {{ section.settings.des_page_about_2 }}
+			          </div>
+			        {% endif %}
+			  		</div>
+  					<div class="block--about">
+			  			{% if section.settings.title_page_about_3 != blank %}
+			          <h4 class="page-subheading">{{ section.settings.title_page_about_3 }}</h4>
+			        {% endif %}
+			        {% if section.settings.des_page_about_3 != blank %}
+			          <div class="block_content">
+			            {{ section.settings.des_page_about_3 }}
+			          </div>
+			        {% endif %}
+			  		</div>
+		  		</div>
+	  </div>
+	</div>
+{% endif %}
+{% schema %}
+{
+  "name": "About Page",
+  "settings": 
+    [
+    	{
+        "type": "checkbox",
+        "id": "enable_block_top",
+        "label": "Enable Section",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "image_abouts",
+        "label": "Image top"
+      },
+      {
+        "type": "text",            
+        "id": "title_page_about_1",
+        "label": "Title 1 "
+      },
+      {
+        "type": "richtext",            
+        "id": "des_page_about_1",
+        "label": "Description 1 "
+      },
+      {
+        "type": "text",            
+        "id": "title_page_about_2",
+        "label": "Title 2 "
+      },
+      {
+        "type": "richtext",            
+        "id": "des_page_about_2",
+        "label": "Description 2 "
+      },
+      {
+        "type": "text",            
+        "id": "title_page_about_3",
+        "label": "Title 3 "
+      },
+      {
+        "type": "richtext",            
+        "id": "des_page_about_3",
+        "label": "Description 3 "
+      }
+
+    ]
+}
+{% endschema %}

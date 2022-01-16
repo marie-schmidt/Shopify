@@ -1,0 +1,8 @@
+<a class="action--wishlist tile-actions--btn flex wishlist-btn " href="#" data-product-handle="{{ product.handle }}" title="{{ 'general.wishlist.add_to_wishlist' | t }}">
+  {% if page.template_suffix == "wishlist"%}
+	<!-- <i class="fa fa-remove"></i> -->
+	{% include 'icon-close' %}
+  {% else %}
+	<i class="fa fa-heart-o"></i> <span class="txt_w">{{ 'general.wishlist.add_to_wishlist' | t }}</span>
+  {% endif %}
+</a>

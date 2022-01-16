@@ -1,0 +1,137 @@
+{%- include 'set_layout' -%}
+<div class="block-section" {%- if section.settings.custom_space != blank -%} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }}" {%- endif -%}>
+  <div class="block_content {{set-box}}">
+    {%- if section.settings.title != blank -%}
+      {% include 'style_header' %}
+      <div class="section-header text-center {{ title_style }} {{ size_title }}">
+        <h2><span>{{ section.settings.title }}</span></h2>
+      </div>
+    {%- endif -%}
+
+    {%- case section.settings.grid -%}
+      {%- when '2' -%}
+        {%- assign grid_item_width = 'col-xs-12 col-md-6' -%}
+        {%- assign image_size = '530x' -%}
+      {%- when '3' -%}
+        {%- assign grid_item_width = 'col-xs-12 col-md-4' -%}
+        {%- assign image_size = '350x' -%}
+      {%- when '4' -%}
+        {%- assign grid_item_width = 'col-xs-12 col-md-3 col-sm-6 col-xs-12' -%}
+        {%- assign image_size = '500x' -%}
+      {%- when '5' -%}
+        {%- assign grid_item_width = 'col-xs-12 col-md-2' -%}
+        {%- assign image_size = '225x' -%}
+    {%- endcase -%}
+
+    <div class="collection-grid">
+      <div class="row">
+        {%- for block in section.blocks limit: section.blocks.size -%}
+          <div class="{{ grid_item_width }}" {{ block.shopify_attributes }}>
+            {%- assign collection = collections[block.settings.collection] -%}
+            {%- include 'collection-grid-item', collection_image_size: image_size -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- if section.blocks.size == 0 -%}
+      {%- include 'no-blocks' -%}
+    {%- endif -%}
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Collection list",
+  "class": "index-section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "custom_space",
+      "label": "Css Style Section",
+      "default":"padding-top:10px;padding-bottom:100px"
+    },
+   {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "box-full",
+       "info":      "Set Layout Section"
+    },
+    {
+      "type": "color",
+      "id": "bg_section",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Collection list"
+    },
+    {
+      "type": "select",
+      "id": "grid",
+      "label": "Collections per row",
+      "default": "3",
+      "options": [
+        {
+          "value": "2",
+          "label": "2"
+        },
+        {
+          "value": "3",
+          "label": "3"
+        },
+        {
+          "value": "4",
+          "label": "4"
+        },
+        {
+          "value": "5",
+          "label": "5"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured_collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "label": "Collection",
+          "id": "collection",
+          "type": "collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection list",
+      "category": "Collection",
+      "settings": {
+        "grid": "3"
+      },
+      "blocks": [
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        },
+        {
+          "type": "featured_collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

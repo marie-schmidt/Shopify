@@ -1,0 +1,49 @@
+<div class="header-container">
+    <div id="header-main">
+        <div class="container-main">
+          <div class="row-main">
+            <div class="header-wrap topnav-flex">
+              <div class="header-top">
+                <div id="header_logo">
+                  {%- if template == 'index' -%}
+                  <h1 class="" itemscope itemtype="http://schema.org/Organization">
+                    {%- else -%}
+                    <div class="" itemscope itemtype="http://schema.org/Organization">
+                      {%- endif -%}
+                      {% if settings.logo %}
+                        <a href="/" itemprop="url" class="site-header__logo-image">
+                          {% capture logo_alt %}{{ settings.logo.alt | default: shop.name }}{% endcapture %}
+                          <img class="lazyload js logo-desk"
+                               src="{{ settings.logo | img_url: 'master' }}"
+                               alt="{{ logo_alt | escape }}"
+                               style="max-width: {{ settings.logo_max_width }}px">
+                          <img class="lazyload js logo-rentina"
+                               src="{{ settings.logo_rentina | img_url: 'master' }}"
+                               alt="{{ logo_alt | escape }}"
+                               style="max-width: {{ settings.logo_max_width }}px">
+                        </a>
+                      {% else %}
+                      <a href="/" itemprop="url">{{ shop.name }}</a>
+                      {%- endif -%}
+                      {%- if template != 'index' -%}
+                    </div>
+                    {%- else -%}
+                  </h1>
+                  {%- endif -%}
+                </div>
+              </div>
+              <div class="position-fix tools__right">
+                {% include 'block-settings' %}
+                {% include 'block-cart' %}
+                {% include 'block-userinfo' %}
+                {% include 'wishlist-head' %}
+                {% include 'block-search' %}
+              </div>
+            </div>
+            <div class="center-topnav">                
+              {% include 'block-menu' %}
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>

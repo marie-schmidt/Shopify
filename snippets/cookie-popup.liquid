@@ -1,0 +1,15 @@
+<div id="virtue-cookies">
+  <div>
+      <div class="col-sm-8 col-xs-12" >
+        <i class="fa fa-info-circle"></i>
+        <span>{{ settings.cookielawinfor | strip_html }}</span>
+      </div>
+  	  <div class="col-sm-4 col-xs-12 text-right">
+      <a href="{{ settings.link_btn_infor_cookie }}" id="virtue-cookies-info">{{ 'general.cookiespopup.more' | t }}</a>
+      <a href="#" id="virtue-cookies-ok">{{'general.cookiespopup.accept'| t}}</a>
+      </div>
+  </div>
+  	<a href="#" id="virtue-cookies-close">
+    {% include 'icon-close' %}
+    </a>
+</div>

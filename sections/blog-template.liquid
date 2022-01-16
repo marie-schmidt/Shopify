@@ -1,0 +1,684 @@
+<style>
+   .card__preloader{position:absolute;margin-left:-7px;margin-top:-7px;top:50%;left:50%;width:14px;height:14px;border-radius:50%;background-color:#eb4f47;-webkit-animation:pulse 1.2s infinite;animation:pulse 1.2s infinite}
+</style>
+{%- assign column_center = 'col-xs-12 col-sm-12 col-md-12' -%}
+{% include 'breadcrumb' %}
+<section id="columns" class="columns-container">
+  <div class="container">
+    <div class="row">
+    {%- paginate blog.articles by section.settings.number_limit -%}
+        <div class="{%- if section.settings.layout == 'list' -%}blog--list-view{%- endif -%}">
+          {%- if section.settings.layout == 'grid' -%}
+            <div id="center_column" class="center_column col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+              <div class="row row-flex grid--blog grid-flex">
+                {%- for article in blog.articles -%}
+                <div class="col-xs-12 col-md-4 col-sm-12">
+                  {%- if article.image -%}
+                   <div class="article__grid">
+                        {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                        <a class="article__grid-image" href="{{ article.url }}" style="min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px">
+                          <img 
+                          class="lazyload"
+                          src="{{ article.image | img_url: 'master' }}"
+                          data-src="{{ img_url }}"
+                          data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                          data-aspectratio="{{ article.image.aspect_ratio }}"
+                          data-sizes="auto"
+                          alt="{{ article.image.alt | escape }}">
+                          <span class="card__preloader"></span>
+                          <noscript>
+                           {% assign card_image = type | img_url: 'master' %}
+                            <img src="{{ card_image }}" alt="{{ type.alt | escape }}" class="card__image">
+                          </noscript>
+                        </a>
+                      </div>
+                   {%- endif -%}
+                  
+                  <div class="article--des article__grid-meta {% if article.image %} article__grid-meta--has-image {% endif %}">
+                     <div class="article__meta">
+                       {%- if section.settings.blog_show_author -%}
+                       <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                       {%- endif -%}
+
+                       {%- if section.settings.blog_show_date -%}
+                       <span class="article__date">
+                         <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                       </span>
+                       {%- endif -%}
+                    </div>
+                    <h2 class="article__title h3">
+                      <a href="{{ article.url }}">{{ article.title }}</a>
+                    </h2>
+                    <div class="rte article__grid-excerpt">
+                      {%- if article.excerpt.size > 0 -%}
+                      {{ article.excerpt }}
+                      {%- else -%}
+                      {{ article.content | strip_html | truncate: 120 }}
+                      {%- endif -%}
+                    </div>
+
+                  {% comment %}{%- if article.tags.size > 0 -%}
+                    <div class="article__tags rte">
+                      {%- for tag in article.tags -%}
+                      <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article__grid-tag">{{ tag }}</a>
+                      {%- endfor -%}
+                    </div>
+                    {%- endif -%}
+                    {% endcomment %}
+
+                    <ul class="list--inline article__meta-buttons">
+                      <li>
+                        <a href="{{ article.url }}" class="btn btn--secondary btn--small">
+                          {{ 'blogs.article.read_more' | t }}
+                        </a>
+                      </li>
+
+                      {%- if blog.comments_enabled? and article.comments_count > 0 -%}
+                      <li>
+                        <a href="{{ article.url }}#comments" class="btn btn--small btn--link">
+                          {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                        </a>
+                      </li>
+                      {%- endif -%}
+                    </ul>
+                  </div>
+                </div>
+                {%- endfor -%}
+                {%- if paginate.pages > 1 -%}
+                  <div class="col-xs-12 col-md-12">
+                  {%- include 'pagination-custom' -%}
+                  </div>          
+                {%- endif -%}  
+              </div>
+            </div>
+           {%- elsif section.settings.layout == 'grid-masonry' -%}
+            <div id="center_column" class="center_column col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+              <div class="row grid--masonry">
+               <div class="grid-blog"></div>
+                {%- for article in blog.articles -%}
+                <div class="col-xs-12 col-md-4 col-sm-12 item-blog">
+                  {%- if article.image -%}
+                   <div class="article__grid">
+                        {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                        <a class="article__grid-image" href="{{ article.url }}" style="min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px">
+                          <img 
+                          class="lazyload"
+                          src="{{ article.image | img_url: 'master' }}"
+                          data-src="{{ img_url }}"
+                          data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                          data-aspectratio="{{ article.image.aspect_ratio }}"
+                          data-sizes="auto"
+                          alt="{{ article.image.alt | escape }}">
+                          <span class="card__preloader"></span>
+                          <noscript>
+                           {% assign card_image = article.image | img_url: 'master' %}
+                            <img src="{{ card_image }}" alt="{{ article.image.alt | escape }}" class="card__image">
+                          </noscript>
+                        </a>
+                      </div>
+                   {%- endif -%}
+                  
+                  <div class="article--des article__grid-meta {% if article.image %} article__grid-meta--has-image {% endif %}">
+                     <div class="article__meta">
+                       {%- if section.settings.blog_show_author -%}
+                       <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                       {%- endif -%}
+
+                       {%- if section.settings.blog_show_date -%}
+                       <span class="article__date">
+                         <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                       </span>
+                       {%- endif -%}
+                    </div>
+                    <h2 class="article__title h3">
+                      <a href="{{ article.url }}">{{ article.title }}</a>
+                    </h2>
+                    <div class="rte article__grid-excerpt">
+                      {%- if article.excerpt.size > 0 -%}
+                      {{ article.excerpt }}
+                      {%- else -%}
+                      {{ article.content | strip_html | truncate: 110 }}
+                      {%- endif -%}
+                    </div>
+
+                  {% comment %}{%- if article.tags.size > 0 -%}
+                    <div class="article__tags rte">
+                      {%- for tag in article.tags -%}
+                      <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article__grid-tag">{{ tag }}</a>
+                      {%- endfor -%}
+                    </div>
+                    {%- endif -%}
+                    {% endcomment %}
+
+                    <ul class="list--inline article__meta-buttons">
+                      <li>
+                        <a href="{{ article.url }}" class="btn btn--secondary btn--small">
+                          {{ 'blogs.article.read_more' | t }}
+                        </a>
+                      </li>
+
+                      {%- if blog.comments_enabled? and article.comments_count > 0 -%}
+                      <li>
+                        <a href="{{ article.url }}#comments" class="btn btn--small btn--link">
+                          {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                        </a>
+                      </li>
+                      {%- endif -%}
+                    </ul>
+                  </div>
+                </div>
+                {%- endfor -%}
+                 
+              </div>
+              {%- if paginate.pages > 1 -%}
+                  <div class="row">
+                     <div class="col-xs-12 col-md-12">
+                      {%- include 'pagination-custom' -%}
+                      </div>
+                  </div>       
+                {%- endif -%} 
+            </div>
+          {%- elsif section.settings.layout == 'list' -%}
+            <div id="center_column" class="center_column col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+              <div class="row">
+              {%- for article in blog.articles -%}
+                  <div class="col-xs-12 col-md-12">
+                    <div class="article--listing clearfix">
+                      {%- if article.image -%}
+                      <div class="article--listing--img">
+                           {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                           <a class="article--listing--link" href="{{ article.url }}" style="display:block;min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px;">
+                             <img 
+                             class="article__grid-image lazyload"
+                             src="{{ article.image | img_url: 'master' }}"
+                             data-src="{{ img_url }}"
+                             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                             data-aspectratio="{{ article.image.aspect_ratio }}"
+                             data-sizes="auto"
+                             alt="{{ article.image.alt | escape }}">
+                             <span class="card__preloader"></span>
+                             <noscript>
+                              {% assign card_image = article.image | img_url: 'master' %}
+                               <img src="{{ card_image }}" alt="{{ article.image.alt | escape }}" class="card__image">
+                             </noscript>
+                           </a>
+                      </div>
+                      {%- endif -%}
+                      <div class="article--des">
+                        {%- if section.settings.blog_show_author -%}
+                          <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                        {%- endif -%}
+                        {%- if section.settings.blog_show_date -%}
+                          <span class="article__date">
+                            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                          </span>
+                        {%- endif -%}
+                        <h2 class="article__title h3"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+                        <div class="rte">
+                          {%- if article.excerpt.size > 0 -%}
+                          {{ article.excerpt }}
+                          {%- else -%}
+                          {{ article.content | strip_html | truncate: 150 }}
+                          {%- endif -%}
+                        </div>
+
+                        {%- if article.tags.size > 0 -%}
+                        <div class="article__tags article__tags--list rte">
+                          {{ 'blogs.article.posted_in' | t }} : 
+                          {%- for tag in article.tags -%}
+                          <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{%- unless forloop.last -%}, {%- endunless -%}
+                          {%- endfor -%}
+                        </div>
+                        {%- endif -%}
+
+                        <ul class="list--inline article__meta-buttons">
+                          <li>
+                            <a href="{{ article.url }}" class="btn btn--secondary btn--small">
+                              {{ 'blogs.article.read_more' | t }}
+                            </a>
+                          </li>
+                          {%- if blog.comments_enabled? and article.comments_count == 0 -%}
+                          <li>
+                            <a href="{{ article.url }}#comment_form" class="btn btn--secondary btn--small">
+                             <i class="fa  fa-comment-o"></i> {{ 'blogs.comments.title' | t }}
+                            </a>
+                          </li>
+                          {%- endif -%}
+
+                          {%- if blog.comments_enabled? and article.comments_count > 0 -%}
+                          <li>
+                            <a href="{{ article.url }}#comments" class="btn btn--secondary btn--small">
+                             <i class="fa  fa-comment-o"></i>  {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                            </a>
+                          </li>
+                          {%- endif -%}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+              {%- endfor -%}
+               {%- if paginate.pages > 1 -%}
+                  <div class="col-xs-12 col-md-12">
+                  {%- include 'pagination-custom' -%}
+                  </div>          
+               {%- endif -%} 
+              </div>
+            </div>
+          {%- elsif section.settings.layout == 'list-2' -%}
+            <div id="center_column" class="center_column list-basic col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+              <div class="row">
+              {%- for article in blog.articles -%}
+                  <div class="col-xs-12 col-md-12">
+                    <div class="article--listing clearfix">
+                      {%- if article.image -%}
+                         <div class="article--listing--img">
+                           {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                           <a class="article--listing--link" href="{{ article.url }}" style="display:block;min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px;">
+                             <img 
+                             class="article__grid-image lazyload"
+                             src="{{ article.image | img_url: 'master' }}"
+                             data-src="{{ img_url }}"
+                             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                             data-aspectratio="{{ article.image.aspect_ratio }}"
+                             data-sizes="auto"
+                             alt="{{ article.image.alt | escape }}">
+                             <span class="card__preloader"></span>
+                             <noscript>
+                              {% assign card_image = article.image | img_url: 'master' %}
+                               <img src="{{ card_image }}" alt="{{ article.image.alt | escape }}" class="card__image">
+                             </noscript>
+                           </a>
+                      </div>
+                      {%- endif -%}
+                      <div class="article--des">
+                        {%- if section.settings.blog_show_author -%}
+                          <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                        {%- endif -%}
+                        {%- if section.settings.blog_show_date -%}
+                          <span class="article__date">
+                            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                          </span>
+                        {%- endif -%}
+                        <h2 class="article__title h3"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+                        <div class="rte">
+                          {%- if article.excerpt.size > 0 -%}
+                          {{ article.excerpt }}
+                          {%- else -%}
+                          {{ article.content | strip_html | truncate: 150 }}
+                          {%- endif -%}
+                        </div>
+
+                        {%- if article.tags.size > 0 -%}
+                        <div class="article__tags article__tags--list rte">
+                          {{ 'blogs.article.posted_in' | t }} : 
+                          {%- for tag in article.tags -%}
+                          <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{%- unless forloop.last -%}, {%- endunless -%}
+                          {%- endfor -%}
+                        </div>
+                        {%- endif -%}
+
+                        <ul class="list--inline article__meta-buttons">
+                          <li>
+                            <a href="{{ article.url }}" class="btn btn--secondary btn--small">
+                              {{ 'blogs.article.read_more' | t }}
+                            </a>
+                          </li>
+                          {%- if blog.comments_enabled? and article.comments_count == 0 -%}
+                          <li>
+                            <a href="{{ article.url }}#comment_form" class="btn btn--secondary btn--small">
+                             <i class="fa  fa-comment-o"></i> {{ 'blogs.comments.title' | t }}
+                            </a>
+                          </li>
+                          {%- endif -%}
+
+                          {%- if blog.comments_enabled? and article.comments_count > 0 -%}
+                          <li>
+                            <a href="{{ article.url }}#comments" class="btn btn--secondary btn--small">
+                             <i class="fa  fa-comment-o"></i>  {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                            </a>
+                          </li>
+                          {%- endif -%}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+              {%- endfor -%}
+              {%- if paginate.pages > 1 -%}
+                  <div class="col-xs-12 col-md-12">
+                  {%- include 'pagination-custom' -%}
+                  </div>          
+               {%- endif -%} 
+              </div>
+            </div>
+          {%- elsif section.settings.layout == 'list-3' -%}
+            <div id="center_column" class="center_column list-creative col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+               <div class="row">
+               {%- for article in blog.articles -%}
+                  <div class="col-xs-12 col-md-12">
+                    <div class="article--listing clearfix">
+                     <div class="row no-margin list-creative-row">
+                       <div class="col-md-7 col-sm-6 col-xs-12 no-padding">
+                       {%- if article.image -%}
+                        {%- assign img_url =  article.image | img_url: 'master' -%}
+                         <p class="article--listing--img" >
+                           <a class="lazyload bg_link" href="{{ article.url }}" data-bgset="{% include 'bgset', image: article.image  %}" data-sizes="auto" data-src="background-image: url({{ img_url }})">
+                           
+                           </a>
+                         </p>
+                      {%- endif -%}
+                      </div>
+                         <div class="col-md-5 col-sm-6 col-xs-12 no-padding">
+                            <div class="article--des">
+                              {%- if section.settings.blog_show_author -%}
+                                <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                              {%- endif -%}
+                              {%- if section.settings.blog_show_date -%}
+                                <span class="article__date">
+                                  <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                                </span>
+                              {%- endif -%}
+                              <h2 class="article__title h3"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+                              <div class="rte">
+                                {%- if article.excerpt.size > 0 -%}
+                                {{ article.excerpt }}
+                                {%- else -%}
+                                {{ article.content | strip_html | truncate: 150 }}
+                                {%- endif -%}
+                              </div>
+
+                              {%- if article.tags.size > 0 -%}
+                              <div class="article__tags article__tags--list rte">
+                                {{ 'blogs.article.posted_in' | t }} : 
+                                {%- for tag in article.tags -%}
+                                <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{%- unless forloop.last -%}, {%- endunless -%}
+                                {%- endfor -%}
+                              </div>
+                              {%- endif -%}
+
+                              <ul class="list--inline article__meta-buttons">
+                                <li>
+                                  <a href="{{ article.url }}" class="btn btn--secondary btn--small">
+                                    {{ 'blogs.article.read_more' | t }}
+                                  </a>
+                                </li>
+                                {%- if blog.comments_enabled? and article.comments_count == 0 -%}
+                                <li>
+                                  <a href="{{ article.url }}#comment_form" class="btn btn--secondary btn--small">
+                                   <i class="fa  fa-comment-o"></i> {{ 'blogs.comments.title' | t }}
+                                  </a>
+                                </li>
+                                {%- endif -%}
+
+                                {%- if blog.comments_enabled? and article.comments_count > 0 -%}
+                                <li>
+                                  <a href="{{ article.url }}#comments" class="btn btn--secondary btn--small">
+                                   <i class="fa  fa-comment-o"></i>  {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                                  </a>
+                                </li>
+                                {%- endif -%}
+                              </ul>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+               {%- endfor -%}
+               {%- if paginate.pages > 1 -%}
+                  <div class="col-xs-12 col-md-12">
+                  {%- include 'pagination-custom' -%}
+                  </div>          
+               {%- endif -%} 
+              </div>
+            </div>
+          {%- elsif section.settings.layout == 'list-4' -%}
+            <div id="center_column" class="center_column list-line col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+              <div class="row">
+              {%- for article in blog.articles -%}
+                  <div class="col-xs-12 col-md-12">
+                    <div class="article--listing clearfix">
+                      {%- if article.image -%}
+                         <div class="article--listing--img">
+                           {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                           <a class="article--listing--link" href="{{ article.url }}" style="display:block;min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px;">
+                             <img 
+                             class="article__grid-image lazyload"
+                             src="{{ article.image | img_url: 'master' }}"
+                             data-src="{{ img_url }}"
+                             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                             data-aspectratio="{{ article.image.aspect_ratio }}"
+                             data-sizes="auto"
+                             alt="{{ article.image.alt | escape }}">
+                             <span class="card__preloader"></span>
+                             <noscript>
+                              {% assign card_image = article.image | img_url: 'master' %}
+                               <img src="{{ card_image }}" alt="{{ article.image.alt | escape }}" class="card__image">
+                             </noscript>
+                           </a>
+                      </div>
+                      {%- endif -%}
+                      <div class="article--des">
+                        {%- if section.settings.blog_show_author -%}
+                          <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                        {%- endif -%}
+                        {%- if section.settings.blog_show_date -%}
+                          <span class="article__date">
+                            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                          </span>
+                        {%- endif -%}
+                        <h2 class="article__title h3"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+                        <ul class="list--inline article__meta-buttons">
+                          <li>
+                            <a href="{{ article.url }}" class="btn btn--secondary btn--small">
+                              {{ 'blogs.article.read_more' | t }}
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+              {%- endfor -%}
+              {%- if paginate.pages > 1 -%}
+                  <div class="col-xs-12 col-md-12">
+                  {%- include 'pagination-custom' -%}
+                  </div>          
+               {%- endif -%} 
+              </div>
+            </div>
+          {%- elsif section.settings.layout == 'list-time' -%}
+            <div id="center_column" class="center_column list-time col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %} {% if section.settings.layout-sidebar == 'left' %} pull-right {% endif %}">
+               <div class="row">
+                <div class="col-xs-12 {% if section.settings.blog-sidebar-enable and section.settings.layout-sidebar =='left' %} col-md-11 col-md-offset-1 {% elsif  section.settings.blog-sidebar-enable %} col-md-11 {% endif %}">
+                  {% for article in blog.articles %}
+                    <div class="article--listing">
+                      <h2 class="article__title h3"><a href="{{ article.url }}">{{ article.title }}</a></h2>
+                      {% if section.settings.blog_show_author %}
+                      <span class="article__author">{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+                      {% endif %}
+                      {% if blog.comments_enabled? and article.comments_count == 0 %}
+                          <a href="{{ article.url }}#comment_form" class="article__comment">
+                            <i class="fa fa-comment-o"></i> {{ 'blogs.comments.title' | t }}
+                          </a>
+                        {% endif %}
+
+                        {% if blog.comments_enabled? and article.comments_count > 0 %}
+                          <a href="{{ article.url }}#comments" class="article__comment">
+                            <i class="fa fa-comment-o"></i> {{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}
+                          </a>
+                        {% endif %}
+                      {% if section.settings.blog_show_date %}
+                      <span class="article__date">
+                        <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: '%Y-%m-%d' }}</time>
+                      </span>
+                      {% endif %}
+                     {%- if article.image -%}
+                         <div class="article--listing--img">
+                              {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                              <a class="article--listing--link" href="{{ article.url }}" style="display:block;min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px;">
+                                <img 
+                                class="article__grid-image lazyload"
+                                src="{{ article.image | img_url: 'master' }}"
+                                data-src="{{ img_url }}"
+                                data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                                data-aspectratio="{{ article.image.aspect_ratio }}"
+                                data-sizes="auto"
+                                alt="{{ article.image.alt | escape }}">
+                                <span class="card__preloader"></span>
+                                <noscript>
+                                 {% assign card_image = article.image | img_url: 'master' %}
+                                  <img src="{{ card_image }}" alt="{{ article.image.alt | escape }}" class="card__image">
+                                </noscript>
+                              </a>
+                         </div>
+                      {%- endif -%}
+
+                      <div class="rte">
+                        {% if article.excerpt.size > 0 %}
+                        {{ article.excerpt }}
+                        {% else %}
+                        {{ article.content | strip_html | truncate: 200 }}
+                        {% endif %}
+                      </div>
+
+                      {% if article.tags.size > 0 %}
+                      <div class="article__tags article__tags--list rte">
+                        {{ 'blogs.article.posted_in' | t }}
+                        {% for tag in article.tags %}
+                        <a href="{{ blog.url }}/tagged/{{ tag | handle }}">{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
+                        {% endfor %}
+                      </div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                </div>
+                {%- if paginate.pages > 1 -%}
+                  <div class="col-xs-12 col-md-12">
+                  {%- include 'pagination-custom' -%}
+                  </div>          
+               {%- endif -%} 
+              </div>
+            </div>
+          {%- endif -%}    
+          {%- if section.settings.blog-sidebar-enable -%}
+            <aside>
+              <div {% if section.settings.layout-sidebar == 'left' %}id="left_column" {% else section.settings.layout-sidebar == 'right'%}id="right_column" {% endif %} class=" sidebar col-xs-12 col-sm-4 col-md-4 {% if section.settings.layout-sidebar == 'left' %}left_column pull-left {% else section.settings.layout-sidebar == 'right' %} right_column  {% endif %}">
+                {%- include 'blog-sidebar' -%}
+              </div>
+            </aside>
+            {%- endif -%} 
+        </div>
+
+    {%- endpaginate -%}
+    
+    </div>
+  </div>
+</section>
+{% if section.settings.layout == 'grid-masonry' %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    var $grid = $('.grid--masonry').isotope({
+            itemSelector: '.item-blog',
+            percentPosition: true,
+            masonry: {
+              columnWidth: '.grid-blog',
+              isAnimated: true
+            }
+        });
+        // layout Isotope after each image loads
+        $grid.imagesLoaded().progress( function() {
+            $grid.isotope('layout');
+        });
+  });
+</script>
+{% endif %}
+{% schema %}
+{
+  "name": "Blog pages",
+  "settings": [
+	{
+      "type": "header",
+      "content": "Sidebar Setting"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog-sidebar-enable",
+      "label": "Sidebar Enable",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout-sidebar",
+      "label": "Layout Sidebar",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },	
+	{
+      "type": "header",
+      "content": "---- * Content Setting * ----"
+    },
+    {
+      "type": "radio",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "grid-masonry",
+          "label": "Grid Masonry"
+        },
+        {
+          "value": "list",
+          "label": "List Style 1"
+        },
+        {
+          "value": "list-2",
+          "label": "List Style 2"
+        },
+        {
+          "value": "list-3",
+          "label": "List Style 3"
+        },
+        {
+          "value": "list-4",
+          "label": "List Style 4"
+        },
+        {
+          "value": "list-time",
+          "label": "List TimeLine"
+        }
+      ],
+      "default": "list"
+    },
+    {
+      "type": "text",
+      "id": "number_limit",
+      "label": "Limit Number Blog items on Page",
+      "default": "5"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "label": "Show author",
+      "default": true
+    },
+
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "label": "Show date",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

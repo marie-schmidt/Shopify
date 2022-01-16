@@ -1,0 +1,50 @@
+{%- unless title_block -%}
+	{%- assign title_block = '' -%}
+{%- endunless -%}
+{%- unless proLazyLoad -%}
+	{%- assign proLazyLoad = false -%}
+{%- endunless -%}
+<div id="productTabs{{ block-producttabs }}" class="products_block exclusive block clearfix">
+	<div class="box-line">
+      <div class="producttabs_left-collumn">
+        <ul class="productTabsNav nav nav-tabs" role="tablist">
+        {%- for block in section.blocks -%}
+        <li {% if forloop.first %} class="active"{% endif %}><a href="#{{ section.id }}{{ forloop.index }}"  role="tab" data-toggle="tab" ><span>{{ block.settings.tab_name }}</span></a></li>
+        {%-endfor -%}
+		</ul>
+      </div>
+      <div class="producttabs_right-collumn">
+		<div class="block_content">
+			<div class="product_tab_content tab-content">
+            {%- for block in section.blocks -%}
+   				{%- assign collection_produclists = block.settings.collection -%}
+               {%- if collection_produclists == blank -%}{%- assign collection_produclists = "all" -%}{%- endif -%}
+               {%- assign collection = collections[collection_produclists] -%}
+   					<div class="tab-pane {% if forloop.first %} active{% endif %}" id="{{ section.id }}{{ forloop.index }}">
+              
+   						{%- if type_block == 'boostrap_carousel' -%}
+   							{%- capture product_carousel -%}{{ section.id }}{{ forloop.index }}{%- endcapture -%}
+   							{%- include 'product_carousel' -%}
+   						{%- else -%}
+   							{%- include 'product_carousel_slick_tab' -%}
+   						{%- endif -%}
+	              	</div>
+            {%- endfor -%}
+			</div>
+		</div>
+      </div>
+	</div>
+</div>
+<script>
+  $(document).ready(function() {   
+      $("#{{ section.id }}{{ forloop.index }} .nav-tabs li", this).first().addClass("active");
+      $("#{{ section.id }}{{ forloop.index }} .tab-content .tab-pane", this).first().addClass("active");
+      $('.nav-tabs a').on('shown.bs.tab', function(event){
+		    $('#{{ section.id }}{{ forloop.index }} .slick_carousel').slick("setPosition");
+      });
+      $('.nav-tabs a').on('shown.bs.tab', function(event){
+        $('.producttabs-wrapper__item').children().slick("setPosition");
+      });
+    });
+</script>
+{% assign proLazyLoad = false %}
