@@ -1,0 +1,43 @@
+{%- assign social_icons = false -%}
+
+{% if
+  settings.social_twitter_link != blank
+  or settings.social_facebook_link != blank
+  or settings.social_pinterest_link != blank
+  or settings.social_instagram_link != blank
+  or settings.social_tumblr_link != blank
+  or settings.social_snapchat_link != blank
+  or settings.social_youtube_link != blank
+  or settings.social_vimeo_link != blank
+  or template contains 'article'
+  or template contains 'blog'
+%}
+  {%- assign social_icons = true -%}
+{% endif %}
+{%- assign set-box = ''  -%}
+{%- if settings.set_box == 'box-full' -%}
+  {%- assign set-box = 'page-content' -%}
+{%- elsif settings.set_box == 'box-container' -%}
+  {%- assign set-box = 'container' -%}
+{%- elsif settings.set_box == 'none' -%}
+  {%- assign set-box = '' -%}
+{%- endif -%}
+
+{%- if settings.img_footer != blank  -%}
+  {%- assign img_url = settings.img_footer | img_url: 'master' -%}
+{%- else -%}
+  {%- assign img_url = '' -%}
+{%- endif -%}
+<footer  class="lazyload site-footer site-{{ settings.footer-template-layout }} {% if settings.enable_border_top %} border-top {% endif %} {% if settings.enable_parallax %}footer-parallax {% endif %}"  {%- if settings.custom_space -%} style="{{ settings.custom_space }};background-color: {{settings.bg_section }};" {%- endif -%} data-bgset="{% include 'bgset', image: settings.img_footer %}" data-sizes="auto" data-parent-fit="cover">
+  <div class="{{ settings.footer-template-layout }}">
+    {% include settings.footer-template-layout %}
+  </div>
+</footer>
+
+
+{% if settings.enable_parallax %}
+<script type="text/javascript">
+  var footerParaHeight = $(".site-footer").outerHeight( true );
+  $(".main-content").css("margin-bottom",footerParaHeight);
+</script>
+{% endif %}

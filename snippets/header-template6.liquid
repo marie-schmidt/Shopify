@@ -1,0 +1,64 @@
+<style>
+  .top-bar:before{
+    background-color:{{settings.colortopbar}};
+  }
+</style>
+<div class="header-container">
+    <div id="header-main">
+        <div class="container-main">
+          <div class="top-bar" style="background-color:{{settings.colortopbar}};">
+            <div class="nav clearfix">
+            {% if settings.enable_banner_run_top != blank %}
+                <div class="pull-left banner__run hidden-xs">
+                    <a href="{{settings.link_banner_run_top}}" title="{{settings.enable_banner_run_top}}">{{ settings.enable_banner_run_top }}</a>
+                </div>
+            {% endif %}
+              <div class="position-fix tools__right">
+                {% include 'block-settings' %}
+                {% include 'block-cart' %}
+                {% include 'block-userinfo' %}
+                {% include 'wishlist-head' %}
+                {% include 'block-search' %}
+              </div>
+            </div>
+          </div>
+          <div class="row-main">
+            <div class="header-wrap topnav-flex">
+              <div class="center-topnav">                
+                {% include 'block-menu' %}
+              </div>
+              <div class="header-top">
+                <div id="header_logo">
+                  {%- if template == 'index' -%}
+                  <h1 class="" itemscope itemtype="http://schema.org/Organization">
+                    {%- else -%}
+                    <div class="" itemscope itemtype="http://schema.org/Organization">
+                      {%- endif -%}
+                      {% if settings.logo %}
+                        <a href="/" itemprop="url" class="site-header__logo-image">
+                          {% capture logo_alt %}{{ settings.logo.alt | default: shop.name }}{% endcapture %}
+                          <img class="lazyload js logo-desk"
+                               src="{{ settings.logo | img_url: 'master' }}"
+                               alt="{{ logo_alt | escape }}"
+                               style="max-width: {{ settings.logo_max_width }}px">
+                          <img class="lazyload js logo-rentina"
+                               src="{{ settings.logo_rentina | img_url: 'master' }}"
+                               alt="{{ logo_alt | escape }}"
+                               style="max-width: {{ settings.logo_max_width }}px">
+                        </a>
+                      {% else %}
+                      <a href="/" itemprop="url">{{ shop.name }}</a>
+                      {%- endif -%}
+                      {%- if template != 'index' -%}
+                    </div>
+                    {%- else -%}
+                  </h1>
+                  {%- endif -%}
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>

@@ -1,0 +1,37 @@
+{% include 'breadcrumb' %}
+<section id="columns" class="columns-container">
+	<div class="container">
+		<div class="row">
+			
+			<section id="center_column" class="col-xs-12 {% if settings.cms_sidebar %} col-md-9 pull-right {% endif %}">
+              	<div class="page-wrap">
+					<h1 class="page-header bottom-indent">{{ page.title }}</h1>
+                    <div class="rte">
+                        {% include 'shortcode' load: page.content %}
+                    </div>
+              	</div>
+			</section>
+			{% if settings.cms_sidebar %}
+				<div class="col-md-3 sidebar col-xs-12 pull-left">
+		            {% assign name = settings.cms_sidebar_title %}
+		            {% assign link = settings.cms_sidebar_link %}
+		            {% capture linklists_name %}{{ link }}{% endcapture %}
+					<div class="block blockcms " id="blockcms">
+					    {% if name != blank %}
+					        <h4 class="title_block">{{ name }}</h4>
+					    {% endif %}
+					    <div class="block_content">
+					        <ul class="blockcms__list list-group list-unstyled listSidebar">
+					            {% for link in linklists[link].links %}
+					                <li class="item">
+					                    <a href="{{ link.url }}" title="{{ link.title }}">{{ link.title }}</a>
+					                </li>
+					            {% endfor %}
+					        </ul>
+					    </div>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</section>

@@ -1,0 +1,62 @@
+{% unless collection_image_size %}
+  {%- assign collection_image_size = '450x450' -%}
+{% endunless %}
+{% capture collectionlist %}{% include 'shortcode-render' render:'action' %}{% endcapture %}
+{% capture columnsItem %}{% include 'shortcode-render' render:'columns' default:'4' %}{% endcapture %}
+{% capture itemHandle %}{% include 'shortcode-render' render:'handle' default:'' %}{% endcapture %}
+
+
+{% case collectionlist %}
+	{% when 'new list' %}
+		{% assign columnsItem = columnsItem | plus:0 %}
+        {% assign colItem = 12 | divided_by:columnsItem %}
+        {% if columnsItem == 5 %}
+            {% capture itemWidth %}col-md-2-4 col-xs-6 col-sp-12{% endcapture %}
+        {% else %}
+            {% capture itemWidth %}col-md-{{ colItem }} col-xs-6 col-sp-12{% endcapture %}
+        {% endif %}
+		<div class="listCollections">
+			<div class="row">
+	{% when 'end list' %}
+			</div>
+		</div>
+	{% when 'item' %}
+		{% assign itemHandle = itemHandle | handleize %}
+		{% assign collection = collections[itemHandle] %}
+		{% if itemTitle == blank %}
+			{% assign collectionTitle = collection.title %}
+		{% else %}
+			{% assign collectionTitle = itemTitle %}
+		{% endif %}
+		{% if itemHref == blank %}
+			{% assign collectionHref = collection.url %}
+		{% else %}
+			{% assign collectionHref = itemHref %}
+		{% endif %}
+		<div class="block_collection {{ itemWidth }}">
+			<div class="collection_item">
+				<div class="collection-grid-item">
+					<a href="{{ collection.url }}" class="collection-grid-item__link" title="{{ collection.title }}">
+						{%- if collection.empty? -%}
+						  {%- comment -%}add default state for collection block in theme editor{%- endcomment -%}
+						  {%- assign collection_image_url = '' -%}
+						{%- else -%}
+						  {%- if collection.image -%}
+						    {%- capture collection_image_url -%}{{ collection | img_url: collection_image_size, crop: 'top' | split:'?' | first  }}{%- endcapture -%}
+						  {%- elsif collection.products.first -%}
+						    {%- capture collection_image_url -%}{{ collection.products.first | img_url: collection_image_size, crop: 'top' | split:'?' | first }}{%- endcapture -%}
+						  {%- endif -%}
+						{%- endif -%}
+                      		<div class="collection-grid-item__overlay" style="background-image: url({{ collection_image_url }})">                            	
+                      		</div>
+                    </a>
+				</div>
+              	<div class="collection-meta">
+                    <h3 class="h5">
+                      	<a href="{{ collection.url }}" title="{{ collection_title }}">{{ collection.title }}</a>
+                    </h3>
+                    <p class="collection_desc">{{ collection.description | strip_html | truncatewords: 16 }}</p>
+                </div>
+			</div>
+		</div>
+{% endcase %}

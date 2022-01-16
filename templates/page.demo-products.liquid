@@ -1,0 +1,151 @@
+{% include 'breadcrumb' %}
+{% capture code %}
+{%- unless grid_item_width -%}
+{%- capture grid_item_width -%}col-md-3 col-sm-4 col-xs-6 col-sp-6{%- endcapture -%}
+{%- endunless -%}
+{%- unless current_collection == blank -%}
+{%- assign current_collection = collection -%}
+{%- endunless -%}
+{%- assign on_sale = false -%}
+{%- if product.compare_at_price > product.price -%}
+{%- assign on_sale = true -%}
+{%- endif -%}
+
+{%- if product.available  -%}
+    {%- assign sold_out = false -%}
+{% else %}
+    {%- assign sold_out = true -%}
+{%- endif -%}
+{%- assign imagesize = settings.home_product_imagesize -%}
+{%- assign new = false -%}
+{%- assign new_count = settings.theme_newproduct | plus: 0 -%}
+{%- assign date_published_year = product.published_at | date:'%Y' -%}
+{%- assign date_published_month = product.published_at | date:'%m' -%}
+{%- assign date_published_day = product.published_at | date:'%d' -%}
+{%- assign date_now_year = 'now' | date:'%Y' -%}
+{%- assign date_now_month = 'now' | date:'%m' -%}
+{%- assign date_now_day = 'now' | date:'%d' -%}
+{%- assign day_year = date_now_year | minus:date_published_year | times: 365 -%}
+{%- assign day_month = date_now_month | minus:date_published_month | times: 30 -%}
+{%- assign day_day = date_now_day | minus:date_published_day -%}
+{%- assign date_difference = day_year | plus: day_month | plus: day_day -%}
+{%- if date_difference <= new_count -%}
+{%- assign new = true -%}
+{%- endif -%}
+{%- assign productIndex = forloop.index | minus:1 -%}
+{%- if settings.productitem_animate_enable -%}
+{%- if settings.productitem_animate_delay != blank -%}
+{%- assign delayTime = settings.productitem_animate_delay | times : productIndex -%}
+{%- else -%}
+{%- assign delayTime = 100 | times : productIndex -%}
+{%- endif -%}
+{%- capture delayLoadProduct -%}data-wow-delay="{{delayTime}}ms"{%- endcapture -%}
+{%- assign effectLoadProduct = 'wow fadeIn' -%}
+{%- else -%}
+{%- capture delayLoadProduct -%}{%- endcapture -%}
+{%- assign effectLoadProduct = '' -%}
+{%- endif -%}
+{%- if  modcol == 1  and modpage == 1 or forloop.first -%}
+{%- assign item_special="item_special" -%}
+{%- else -%}
+{%- assign item_special="" -%}
+{%- endif-%}
+{% endcapture %}
+<section id="columns" class="columns-container">
+	<div class="container">
+		<div class="row">
+			<section id="center_column" class="col-sm-12 col-md-12">
+              	<div class="page-wrap">
+					   <h1 class="page-header bottom-indent">{{ page.title }}</h1>
+                  <!-- product 1 -->
+                  <div class="block product1">
+                  	<h3> Style 1</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								{{code}}
+									{% include 'product-grid-item1' %}
+								{% endfor %}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 2 -->
+                  <div class="block product1">
+                  	<h3> Style 2</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								   {{code}}
+									{% include 'product-grid-item2' %}
+								{% endfor%}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 3 -->
+                  <div class="block product1">
+                  	<h3> Style 3</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								   {{code}}
+									{% include 'product-grid-item3' %}
+								{% endfor %}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 4 -->
+                  <div class="block product1">
+                  	<h3> Style 4</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								   {{code}}
+									{% include 'product-grid-item4' %}
+								{% endfor%}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 5 -->
+                  <div class="block product1">
+                  	<h3> Style 5</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								    {{code}}
+									{% include 'product-grid-item5' %}
+								{% endfor%}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 6 -->
+                  <div class="block product1">
+                  	<h3> Style 6</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								   {{code}}
+									{% include 'product-grid-item6' %}
+								{% endfor%}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 7 -->
+                  <div class="block product1">
+                  	<h3> Style 7</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								   {{code}}
+									{% include 'product-grid-item7' %}
+								{% endfor%}
+							</div>
+                  </div>
+                  <hr>
+                  <!-- product 8 -->
+                  <div class="block product1">
+                  	<h3> Style 8</h3>
+							<div class="row row-flex">
+								{% for product in collections.all.products limit:4 %}
+								   {{code}}
+									{% include 'product-grid-item8' %}
+								{% endfor%}
+							</div>
+                  </div>
+              	</div>
+			</section>
+		</div>
+	</div>
+</section>

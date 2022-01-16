@@ -1,0 +1,93 @@
+{% if section.settings.enable_section%}
+{%- assign img_url = section.settings.image_1 | img_url: 'master' -%}
+<style>
+  .bg_per-left{
+    background: url({{img_url}});
+    background-position: center center;
+    background-size: cover;
+    min-height: 800px;
+  }
+</style>
+<div class="row aboutper-flex no-margin">
+	<div class="col-md-6 col-sm-12 col-xs-12 no-padding bg_per-left" style="line-height: 0;">
+	    {%- if section.settings.image_1 == blank -%}
+	      <div style="height:800px">
+        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+       </div>
+	   {%- endif -%}
+	</div>
+	<div class="col-md-6 col-sm-12 col-xs-12 no-padding ">
+		<div class="aboutper-box">
+		{% if section.settings.title_info != blank %}
+           <h3 class="aboutper-title">{{section.settings.title_info}}</h3>
+     {% endif %}
+     {% if section.settings.sub_info != blank %}
+         <p class="aboutper-des">{{section.settings.sub_info}}</p>
+     {% endif  %}
+     {%- assign img_url = section.settings.image_2 | img_url: '200x' -%}
+	    {%- if section.settings.image_2 != blank -%}
+	      <img src="{{img_url}}" alt="{{section.settings.image_2.alt}}" class="responsive assignature">
+	    {%- else -%}
+	    <div style="height:138px;width: 100px;">
+	      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+	    </div>
+      {%- endif -%}
+	   <div class="aboutper-con">
+   	{% if section.settings.text_phone != blank %}
+ 			<div><span>{{ 'contact.form.phone' | t }} : </span><a class="aboutper-con-num" href="tel:{{section.settings.text_phone }}">{{section.settings.text_phone }}</a></div>
+	   {% endif %}
+	   {% if section.settings.text_email != blank %}
+	   	<div><span>{{ 'contact.form.email' | t }} : </span><a class="aboutper-con-email" href="mailto::{{section.settings.text_phone }}">{{section.settings.text_email }}</a></div>
+	   {% endif %}
+		</div>
+	   </div>
+	</div>
+</div>
+{% endif %}
+{% schema %}
+{
+  "name": "Info Personal",
+  "settings": [
+   {
+     "type": "checkbox",
+     "id": "enable_section",
+     "label": "Enable Section",
+     "default":true
+   },
+   {
+      "type": "header",
+      "content": "------ * Info Personal * ------"
+   },
+   {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+   },
+   {
+     "type": "text",
+     "id": "title_info",
+     "label": "Tittle Info"
+   },
+   {
+     "type": "textarea",
+     "id": "sub_info",
+     "label": "Sub Description"
+   },
+   {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+   },
+   {
+     "type": "text",
+     "id": "text_phone",
+     "label": "Phone"
+   },
+   {
+     "type": "text",
+     "id": "text_email",
+     "label": "Email"
+   }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,51 @@
+<header id="header" class="ap-{{ settings.header-template-layout }}">
+    {%- if settings.show_announcement -%}
+      {%- if settings.home_page_only == false or template.name == 'index' -%}
+          {% capture announcement %}.announcement-bar {background-color: {{ settings.announcement_color_bg }};}.page-width,.announcement-bar--link,.announcement-bar__message,.announcement-bar__close{color: {{ settings.announcement_color_text }};}.announcement-bar--link{border-bottom:1px solid {{ settings.announcement_color_text }};}.announcement-bar--link:hover {color: {{ settings.announcement_color_text_hover }};}{% endcapture %}
+          {% assign css = css | append: announcement %}
+        {%- if settings.announcement_text != blank -%}
+          <div class="announcement-bar announcement-bar__message">
+               <p class="page-width">
+               {%- if settings.announcement_icon != blank -%}
+                 {{ settings.announcement_icon }}
+               {%- endif -%}
+               {{ settings.announcement_text}}
+               {%- if settings.announcement_link != blank -%}
+                  <a href="{{ settings.announcement_link }}" class="announcement-bar--link">{{ settings.announcement_link_text }}</a>
+               {%- endif -%}
+             </p>
+          <a class="announcement-bar__close btn btn--clear" aria-expanded="true" href="javascript:;">{% include 'icon-close' %}</a>
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+      <script>
+        var css = "{{ css }}",
+            head = document.head || document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+        style.type = 'text/css';
+        if (style.styleSheet){
+          style.styleSheet.cssText = css;
+        } else {
+          style.appendChild(document.createTextNode(css));
+        }
+        head.appendChild(style);
+
+         $(document).ready(function() {
+            var date = new Date();
+            var minutes = {{ settings.noti_cookie }};
+            date.setTime(date.getTime() + (minutes * 60 * 1000));
+            var $noti_cookie = $.cookie('popup_top_cookie');
+            if ($noti_cookie == undefined){
+              $('.announcement-bar').slideDown();
+              $('.announcement-bar .btn--clear').click(function(e) {
+                $('.announcement-bar').slideUp();
+                $.cookie('popup_top_cookie', 'yes', { path: '/', expires: date });
+              });
+            }
+         });
+      </script>
+    {%- endif -%}
+    <div class="{{settings.layout_header}}">
+  	{% include settings.header-template-layout %}
+    </div>
+  </header>

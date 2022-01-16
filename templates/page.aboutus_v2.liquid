@@ -1,0 +1,19 @@
+{% include 'breadcrumb' %}
+<section id="columns" class="columns-container">
+    <div class="aboutus about-v2">
+      <div class="container">
+        <section id="center_column">
+            <div class="page-wrap">                
+              <div class="rte">
+                {% section 'page-about-v2' %}
+                {% section 'in-team'%}
+                {% section 'testimonials' %}
+                {% section 'join-us' %}
+                {% include 'shortcode' load: page.content %}
+              </div>
+          </div>
+        </section>
+      </div>     
+  </div>
+</section>
+

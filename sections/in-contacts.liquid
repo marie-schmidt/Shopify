@@ -1,0 +1,57 @@
+{%- if section.settings.enable_incon -%}
+<div class="incontacts text-center">
+	{%- if section.settings.title_con != blank -%}
+		<h3 class="incon-title title-page">{{section.settings.title_con}}</h3>
+	{%- endif -%}
+  {% if section.settings.text != blank %}
+        <div class="rte-setting">{{ section.settings.text }}</div>
+   {% endif %}
+    <div class="aboutper-con">
+    {% if section.settings.text_phone_1 != blank %}
+      <div><span>{{ 'contact.form.phone' | t }} : </span><a class="aboutper-con-num" href="tel:{{section.settings.text_phone_1 }}">{{section.settings.text_phone_1 }}</a></div>
+     {% endif %}
+     {% if section.settings.text_email_1 != blank %}
+      <div><span>{{ 'contact.form.email' | t }} : </span><a class="aboutper-con-email" href="mailto::{{section.settings.text_email_1 }}">{{section.settings.text_email_1 }}</a></div>
+     {% endif %}
+    </div>
+</div>
+{%- endif -%}
+{% schema %}
+{
+	"name": "Info Contacts",
+	"settings": [
+   	 {
+   		 "type": "checkbox",
+   		 "id": "enable_incon",
+   		 "label": "Enable Section",
+   		 "default":true
+   	 },
+   	 {
+   			"type": "header",
+   			"content": "------ * Info Contacts * ------"
+   	 },
+   	 {
+   		 "type": "text",
+   		 "id": "title_con",
+   		 "label": "Tittle Contacts"
+   	 },
+      {
+       "type": "richtext",
+       "id": "text",
+       "label": "Text Sub Column",
+       "default": "<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+     },
+     {
+     "type": "text",
+     "id": "text_phone_1",
+     "label": "Phone"
+   },
+   {
+     "type": "text",
+     "id": "text_email_1",
+     "label": "Email"
+   }
+	]
+	
+}
+{% endschema %}

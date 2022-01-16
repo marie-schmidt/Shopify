@@ -1,0 +1,11 @@
+{%- case settings.title_style -%}
+   {%- when 'none' -%}
+      {%- assign title_style = '' -%}
+   {%- when 'style1' -%}
+      {%- assign title_style = 'section_style_1' -%}
+   {%- when 'style2' -%}
+      {%- assign title_style = 'section_style_2' -%}
+{%- endcase -%}
+{%- if settings.size_title -%}
+   {%- assign size_title = 'section-lager' -%}
+{%- endif -%}

@@ -1,0 +1,117 @@
+
+   <section id="off-canvas-nav" class="apollo-megamenu">
+      <nav class="offcanvas-mainnav">
+            <div id="off-canvas-button">
+                <span class="off-canvas-nav">{% include 'icon-close' %}</span>
+            </div>
+            <div class="language-current clearfix">
+              {% include 'block-currentcies' %}
+              {% if settings.enable_language %}
+                <div class="language-box">
+                {% include 'ap-multilang-box' %}
+                </div>
+              {% endif %}
+            </div>
+            <form class="search_inmenu" action="/search">
+                <input type="hidden" name="type" value="product">
+                <input type="search" placeholder="{{ 'general.search.placeholder' | t }}" name="q" value="{{ search.terms | escape }}"  />
+            </form>
+            <ul class="nav navbar-nav megamenu">
+                {% for link in linklists.main-menu.links %}
+                    {% if linklists[link.handle] != empty %}
+                          <li class="parent dropdown {% if link.active %}active{% endif %}">
+                              <a class="has-category" href="{{ link.url }}" title="{{ link.title }}" target="_self">
+                                  <span class="">{{ link.title }}</span>
+                              </a>
+                              <div class="dropdown-toggle" data-toggle="dropdown"></div>
+                              <div class="dropdown-menu level1">
+                                  <ul>
+                                      {% for child_link in linklists[link.handle].links %}
+                                          {% if linklists[child_link.handle] != empty %}
+                                              <li class="parent dropdown dropdown-submenu {% if child_link.active %}active{% endif %}">
+                                                  <a class="menuTitle" href="{{ child_link.url }}" title="{{ child_link.title }}">
+                                                      <span class="">{{ child_link.title }}</span>
+                                                  </a>
+                                                  <div class="dropdown-toggle" data-toggle="dropdown"></div>
+                                                  <div class="dropdown-menu level2">
+                                                      <ul>
+                                                          {% for child_link1 in linklists[child_link.handle].links %}
+                                                              {% if linklists[child_link1.handle] != empty %}
+                                                                  <li class="parent dropdown dropdown-submenu {% if child_link1.active %}active{% endif %}">
+                                                                      <a class="menuTitle" href="{{ child_link1.url }}" title="{{ child_link1.title }}">
+                                                                          <span class="">{{ child_link1.title }}</span>
+                                                                      </a>
+                                                                      <div class="dropdown-toggle" data-toggle="dropdown"></div>
+                                                                      <div class="dropdown-menu level2">
+                                                                          <ul>
+                                                                              {% for child_link2 in linklists[child_link1.handle].links %}
+                                                                                  <li class="{% if child_link2.active %}active{% endif %}">
+                                                                                      <a class="" href="{{ child_link2.url }}" title="{{ child_link2.title }}">
+                                                                                          <span class="">{{ child_link2.title }}</span>
+                                                                                      </a>
+                                                                                  </li>
+                                                                              {% endfor %}
+                                                                          </ul>
+                                                                      </div>
+                                                                  </li>
+                                                              {% else %}
+                                                                  <li class="{% if child_link1.active %}active{% endif %}">
+                                                                      <a class="" href="{{ child_link1.url }}" title="{{ child_link1.title }}">
+                                                                          <span class="">{{ child_link1.title }}</span>
+                                                                      </a>
+                                                                  </li>
+                                                              {% endif %}
+                                                          {% endfor %}
+                                                      </ul>
+                                                  </div>
+                                              </li>
+                                          {% else %}
+                                              <li class="{% if child_link.active %}active{% endif %}">
+                                                  <a class="" href="{{ child_link.url }}" title="{{ child_link.title }}">
+                                                      <span class="">{{ child_link.title }}</span>
+                                                  </a>
+                                              </li>
+                                          {% endif %}
+                                      {% endfor %}
+                                  </ul>
+                              </div>
+                          </li>
+                      {% else %}
+                          <li class="{% if link.active %}active{% endif %}">
+                              <a class="" href="{{ link.url }}" title="{{ link.title }}" target="_self">
+                                  <span class="">{{ link.title }}</span>
+                              </a>
+                          </li>
+                      {% endif %}
+                {% endfor %}
+                {% if shop.customer_accounts_optional or shop.customer_accounts_enabled %}
+                 {% if customer  %}
+                    <li class="cw_mmenu mm_top">
+                       {% capture fullname %}{{ customer.first_name }} {{ customer.last_name }}{% endcapture %}
+                       <a class="account" rel="nofollow" href="/account" title="{{ 'customer.account.title' | t }}"><span>{{ 'header.general.welcome_html' | t : fullname : fullname }}</span></a>
+                    </li>
+                    <li class="cw_mmenu">
+                      <a id="customer_logout_link" href="/account/logout" title="{{ 'header.general.logout' | t }}"><i class="fa fa-unlock-alt"></i> {{ 'header.general.logout' | t }}</a>
+                    </li>
+                 {% else %}
+                    <li class="cw_mmenu mm_top">
+                       <a id="customer_login_link" href="/account/login" title="{{ 'header.general.login' | t }}"><i class="fa fa-unlock-alt"></i> {{ 'header.general.login' | t }}</a>
+                    </li>
+                    <li class="cw_mmenu">
+                       <a id="customer_register_link" href="/account/register" title="{{ 'header.general.register' | t }}"><i class="fa fa-user-plus"></i> {{ 'header.general.register' | t }}</a>
+                    </li>
+                 {% endif %}
+                 {% if settings.theme_wishlist_enable %}
+                    <li class="cw_mmenu mm_bottom">
+                      <a id="wishlist-total" title="{{ 'header.general.wishlist' | t }}" href="{{ pagewishlist.url }}"><i class="fa fa-heart"></i> {{ 'header.general.wishlist' | t }}</a>
+                    </li>
+                 {% endif %}
+              {% endif %}
+              {% if settings.enable_socical_bar%}
+              <li class="social_menu">
+               {% include 'social_general'%}
+              </li>
+             {% endif %}
+            </ul>
+        </nav>
+  </section>

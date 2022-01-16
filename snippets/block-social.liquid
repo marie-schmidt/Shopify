@@ -1,0 +1,65 @@
+<div id="social_block" class="social_block block">
+    {% if settings.footer_social_title != blank %}
+        <h4 class="title_block pull-left">{{ settings.footer_social_title }}</h4>
+    {% endif %}
+    <div class="block_content pull-left">        
+        <ul class="list-unstyled clearfix list-group list-inline">
+            {% if settings.footer_social_facebook_link != blank %}
+                <li class="facebook">
+                    <a target="_blank" href="{{ settings.footer_social_facebook_link }}" title="{{ shop.name }} on Facebook" class="btn-tooltip" data-original-title="Facebook">
+                        <i class="fa fa-facebook"></i>
+                        <span class="text-social">Facebook</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.footer_social_twitter_link != blank %}
+                <li class="twitter">
+                    <a target="_blank" href="{{ settings.footer_social_twitter_link }}" title="{{ shop.name }} on Twitter" class="btn-tooltip" data-original-title="Twitter">
+                        <i class="fa fa-twitter"></i>
+                        <span class="text-social">Twitter</span>
+                    </a>
+                </li>
+            {% endif %}
+          	{% if settings.footer_social_instagram_link != blank %}
+                <li class="instagram">
+                    <a target="_blank" href="{{ settings.footer_social_instagram_link }}" title="{{ shop.name }} on Instagram" class="btn-tooltip" data-original-title="Instagram">
+                        <i class="fa fa-instagram"></i>
+                        <span class="text-social">Instagram</span>
+                    </a>
+                </li>
+            {% endif %}
+          	{% if settings.footer_social_pinterest_link != blank %}
+                <li class="pinterest">
+                    <a target="_blank" href="{{ settings.footer_social_pinterest_link }}" title="{{ shop.name }} on Pinterest" class="btn-tooltip" data-original-title="Pinterest">
+                        <i class="fa fa-pinterest"></i>
+                        <span class="text-social">Pinterest</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.footer_social_rss_link != blank %}
+                <li class="rss">
+                    <a target="_blank" href="{{ settings.footer_social_rss_link }}" title="{{ shop.name }} on RSS" class="btn-tooltip" data-original-title="RSS">
+                        <i class="fa fa-rss"></i>
+                        <span class="text-social">RSS</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.footer_social_youtube_link != blank %}
+                <li class="youtube">
+                    <a target="_blank" href="{{ settings.footer_social_youtube_link }}" title="{{ shop.name }} on Youtube" class="btn-tooltip" data-original-title="Youtube">
+                        <i class="fa fa-youtube"></i>
+                        <span class="text-social">Youtube</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if settings.footer_social_googleplus_link != blank %}
+                <li class="google-plus">
+                    <a target="_blank" href="{{ settings.footer_social_googleplus_link }}" title="{{ shop.name }} on Google Plus" class="btn-tooltip" data-original-title="Google Plus">
+                        <i class="fa fa-google-plus"></i>
+                        <span class="text-social">Google Plus</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+{% if section.settings.enable_infoabout %}
+<div class="inabout">
+   {%- assign img_url = section.settings.image_1 | img_url: 'master' -%}
+   {%- if section.settings.image_1 != blank -%}
+      <img src="{{img_url}}" alt="{{section.settings.image_1.alt}}" class="responsive lazyload">
+   {%- else -%}
+   <div style="height:590px">
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+   </div>
+   {%- endif -%}
+   <div class="row">
+      <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+         <div class="media">
+           <div class="pull-left">
+            {% if section.settings.title_info != blank %}
+               <h3 class="inabout-title title-page">{{section.settings.title_info}}</h3>
+            {% endif %}
+           </div>
+           <div class="media-body">
+            {% if section.settings.sub_info != blank %}
+             <p class="inabout-des">{{section.settings.sub_info}}</p>
+            {% endif  %}
+           </div>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+         {%- assign img_url = section.settings.image_2 | img_url: 'master' -%}
+         {%- if section.settings.image_2 != blank -%}
+            <img src="{{img_url}}" alt="{{section.settings.image_2.alt}}" class="responsive lazyload">
+         {%- else -%}
+         <div style="height:590px">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+         </div>
+         {%- endif -%}
+      </div>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+         {%- assign img_url = section.settings.image_3 | img_url: 'master' -%}
+         {%- if section.settings.image_3 != blank -%}
+            <img src="{{img_url}}" alt="{{section.settings.image_3.alt}}" class="responsive lazyload">
+         {%- else -%}
+         <div style="height:590px">
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+         </div>
+         {%- endif -%}
+      </div>
+   </div>
+</div>
+{% endif %}
+{% schema %}
+{
+  "name": "Info About",
+  "settings": [
+   {
+     "type": "checkbox",
+     "id": "enable_infoabout",
+     "label": "Enable Section",
+     "default":true
+   },
+   {
+      "type": "header",
+      "content": "------ * Info About * ------"
+   },
+   {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+   },
+   {
+     "type": "text",
+     "id": "title_info",
+     "label": "Tittle Info"
+   },
+   {
+     "type": "textarea",
+     "id": "sub_info",
+     "label": "Sub Description"
+   },
+   {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+   },
+   {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+   }
+  ]
+}
+{% endschema %}

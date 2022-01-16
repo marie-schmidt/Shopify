@@ -1,0 +1,256 @@
+<!doctype html>
+<!--[if IE 9]> <html class="ie9 no-js" lang="{{ shop.locale }}"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class="html no-js {%- if settings.theme_rtl_enable -%} rtl {%- endif -%} " {% if settings.theme_rtl_enable %} dir="rtl" {% endif %} lang="{{ shop.locale }}"  > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+  <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no">
+  <meta name="theme-color" content="{{ settings.color_button }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+  {%- if settings.favicon != blank -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+  {%- endif -%}
+  {%- capture seo_title -%}
+    {{ page_title }}
+    {%- if current_tags -%}
+      {%- assign meta_tags = current_tags | join: ', ' -%} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}
+    {%- endif -%}
+    {%- if current_page != 1 -%}
+      &ndash; {{ 'general.meta.page' | t: page: current_page }}
+    {%- endif -%}
+    {%- unless page_title contains shop.name -%}
+      {%- if false -%}
+      &ndash; {{ shop.name }}
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endcapture -%}
+  <title>{{ seo_title | strip }}</title>
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+  {%- assign keywords = '' -%}
+  {%- for productTag in product.tags -%}
+      {%- if productTag contains 'ap_seo_' -%}
+          {%- if keywords == '' -%}
+              {%- assign keywords = productTag | replace: 'ap_seo_', '' -%}
+          {%- else -%}
+              {%- assign keywords = keywords | append: ', ' -%}
+              {%- assign keywords = keywords | append: productTag | replace: 'ap_seo_', '' -%}
+          {%- endif -%}
+      {%- endif -%}
+  {%- endfor -%}
+  {%- if keywords == '' -%}
+  <meta name="keywords" content="{{ settings.apmetakeyword }}"/>
+  {%- else -%}
+  <meta name="keywords" content="{{ keywords }}"/>
+  {%- endif -%}
+  {%- include 'social-meta-tags' -%}
+  {%- include 'css_loading' -%}
+  <!-- Theme css ================================================================ -->
+  {%- include 'head-css' -%}
+  {{ content_for_header }}
+  
+  {%- include 'head-js' -%}
+  {%-  if template != 'index' -%}
+  {%- if settings.facebook_appid -%}  
+    <meta property="fb:app_id" content="{{ settings.facebook_appid}}" />
+    {%- assign adminid = settings.facebook_admin_id | split: ',' -%} 
+    {%- for id in adminid -%}
+      <meta property="fb:admins" content="{{id}}"/>
+    {%- endfor -%}
+  {%- endif -%} 
+  {%- endif -%}
+{%- include 'ap-multilang-resources' -%}
+{% include 'ap-multilang-resources' %}
+</head>
+<body class="template-{{ template | split: '.' | first }} {{ settings.theme_float_style }} {% if settings.header-template-layout == 'header-template11'  %} menu_overlay {% endif %} {{ page.template_suffix }} {% if settings.header-template-layout == 'header-template5' %}head-5 {% endif %} {% if settings.style_loadding == 'style_5'%} hide_fade out {% endif %} {% if settings.header-template-layout == 'header-template12' %}ap-head-ver {% endif %}">
+{%- if settings.theme_loading_enable -%}
+  {% unless settings.style_loadding == 'style_5'%}
+     <div class="fake_iniload">
+          <div class="stage" style="width: 120px;">
+            {% if settings.style_loadding == '' or settings.style_loadding == 'style_1' %}
+              {% if settings.enable_loadlogo %}
+              <img src="{{ settings.logo-loading | img_url: '200x' }}" alt="{{ shop.name }}">
+              {% endif %}
+              <div class='loading'>
+                <div class='bullet'></div>
+                <div class='bullet'></div>
+                <div class='bullet'></div>
+                <div class='bullet'></div>
+              </div>
+            {% elsif settings.style_loadding == 'style_2' %}
+               <ul class="loading_dot">
+                  <li></li>
+                  <li></li>
+                  <li></li>
+               </ul>
+            {% elsif settings.style_loadding == 'style_3' %}
+            <div class="o-spinner">
+               <div class="o-spinner_axis">
+                   <div class="o-spinner_container">
+                       <div class="o-spinner_inner"></div>
+                   </div>
+               </div>
+           </div>
+           {% elsif settings.style_loadding == 'style_4' %}
+               {% if settings.enable_loadlogo %}
+                  <img src="{{ settings.logo-loading | img_url: '200x' }}" alt="{{ shop.name }}">
+                  {% endif %}
+                  <div class="preloader-wrap">
+                    <div class="percentage" id="precent"></div>
+                    <div class="loader">
+                      <div class="trackbar">
+                        <div class="loadbar"></div>
+                      </div>
+                      <div class="glow"></div>
+                    </div>
+                  </div>
+            {% endif %}
+          </div>
+     </div>
+  {% endunless %}
+  <script>
+      {% if settings.style_loadding == '' or settings.style_loadding == 'style_1' or settings.style_loadding == 'style_2' or settings.style_loadding == 'style_3' %}
+        $(window).load(function() {
+          // Animate loader off screen
+          $(".fake_iniload").fadeOut("slow");
+        });
+      {% elsif settings.style_loadding == 'style_4' %}
+        function onLoad() { 
+          var now = new Date().getTime();
+          var page_load_time = now - performance.timing.navigationStart;
+        }
+        var width = 100, // width of a progress bar in percentage
+       perfData = window.performance.timing, // The PerformanceTiming interface
+       EstimatedTime = -(perfData.loadEventEnd - perfData.navigationStart), // Calculated Estimated Time of Page Load which returns negative value.
+       time = parseInt((EstimatedTime/1000)%60)*100; //Converting EstimatedTime from miliseconds to seconds.
+
+        $(".loadbar").animate({
+          width: width + "%"
+        }, time);
+
+        // Loadbar Glow Animation
+        $(".glow").animate({
+          width: width + "%"
+        }, time);
+        var PercentageID = $("#precent"),
+          start = 0,
+          end = 100,
+          durataion = time;
+          animateValue(PercentageID, start, end, durataion);
+            function animateValue(id, start, end, duration) {
+                var range = end - start,
+                  current = start,
+                  increment = end > start? 1 : -1,
+                  stepTime = Math.abs(Math.floor(duration / range)),
+                  obj = $(id);
+
+                var timer = setInterval(function() {
+                    current += increment;
+                    $(obj).text(current + "%");
+                  //obj.innerHTML = current;
+                    if (current == end) {
+                        clearInterval(timer);
+                    }
+                }, stepTime);
+            }
+            // Fading Out Loadbar on Finised
+            setTimeout(function(){
+              $(".fake_iniload").fadeOut("slow");
+            }, time);
+        {% elsif settings.style_loadding == 'style_5' %}
+            NProgress.start();
+            setTimeout(function() { NProgress.done(); $('.hide_fade').removeClass('out'); }, 1000);
+            
+        {% endif %}
+  </script>
+{%- endif -%}  
+{%-  if template != 'index' -%}
+  
+{%- endif -%}
+
+  {%- include 'cart-popup' -%}
+
+  <a class="in-page-link visually-hidden skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>  
+  <div id="page">
+    {% comment %} {%- section 'header' -%} {% endcomment %}
+    {% include 'header' %}
+    <div class="">
+      <div class="page-container" id="PageContainer">
+        <main class="main-content" id="MainContent">
+          {{ content_for_layout }}
+        </main>
+        {% comment %}{%- section 'footer' -%}{% endcomment %}
+        {% include 'footer' %}
+      </div>
+      {%- if settings.theme_backtotop_enable -%}
+      <p id="back-top">
+        <a href="#top" title="Scroll To Top">
+          <svg>
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-up"></use>
+            <path fill-rule="evenodd" fill="#666561" d="M1.183 7.255l3.95-3.969v8.726h1.698V3.265l3.972 3.99 1.189-1.216L5.982 0-.007 6.039l1.19 1.216z"></path>
+          </svg>
+          <span>Top</span>
+        </a>
+      </p>
+      {%- endif -%}
+    </div>
+  </div>  
+  {% if settings.header-template-layout == 'header-template12' %}
+  <div class="header-container ap-header-template12">
+     <div class="headerver">
+         <div id="header_logo">
+         {%- if template == 'index' -%}
+            <h1 class="" itemscope itemtype="http://schema.org/Organization">
+              {%- else -%}
+              <div class="" itemscope itemtype="http://schema.org/Organization">
+                {%- endif -%}
+                {% if settings.logo %}
+                   <a href="/" itemprop="url" class="site-header__logo-image">
+                    {% capture logo_alt %}{{ settings.logo.alt | default: shop.name }}{% endcapture %}
+                    <img class="lazyload js logo-desk"
+                         src="{{ settings.logo | img_url: 'master' }}"
+                         alt="{{ logo_alt | escape }}"
+                         style="max-width: {{ settings.logo_max_width }}px">
+                    <img class="lazyload js logo-rentina"
+                         src="{{ settings.logo_rentina | img_url: 'master' }}"
+                         alt="{{ logo_alt | escape }}"
+                         style="max-width: {{ settings.logo_max_width }}px">
+                  </a>
+                {% else %}
+                <a href="/" itemprop="url">{{ shop.name }}</a>
+                {%- endif -%}
+                {%- if template != 'index' -%}
+              </div>
+              {%- else -%}
+            </h1>
+            {%- endif -%}
+         </div>
+         <div class="center-topnav">                
+            {% include 'block-menu' %}
+         </div>
+    </div>
+  </div>
+  {% endif %}
+  {%- include 'new-currentcies' -%}
+  {%- if settings.apollo_megamenu_enable -%}
+  {%- include 'block-menu-canvas' -%}
+  {%- endif -%}  
+  {%- if settings.theme_paneltool_enable -%}
+  {%- include 'paneltool' -%}
+  {%- endif -%}
+  {%- if settings.pnewletter_enable and template contains 'index' -%}
+  {%- include 'block-popup-newletter' -%}
+  {%- endif -%}
+{%- if settings.lawcookie -%}
+  {%- include 'cookie-popup' -%}
+{%- endif -%}
+{%- include "ap-compare-product" -%}
+{%- include 'foot-js' -%}  
+{%- if settings.theme_quickview_enable -%}
+  {%- include 'product-quickview' -%}
+{%- endif -%}
+<!-- BEEKETINGSCRIPT CODE START -->{% include 'bk-tracking' %}<!-- BEEKETINGSCRIPT CODE END --> {% include 'smile-initializer' %}
+
+</body>
+</html>

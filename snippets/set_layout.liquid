@@ -1,0 +1,8 @@
+{%- assign set-box = ''  -%}
+{%- if section.settings.set_box == 'box-full' -%}
+  {%- assign set-box = 'page-content' -%}
+{%- elsif section.settings.set_box == 'box-container' -%}
+  {%- assign set-box = 'container' -%}
+{%- elsif section.settings.set_box == 'none' -%}
+  {%- assign set-box = '' -%}
+{%- endif -%}

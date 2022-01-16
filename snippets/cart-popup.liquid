@@ -1,0 +1,13 @@
+<div id="NavDrawer" class="drawer ap_cart_{{ settings.apollo_cart_type }} drawer--{{ settings.apollo_cart_drawer_setting }}">	
+  <div id="CartDrawer" >
+    <div class="drawer__header">
+      <div class="drawer__title h3">{{ 'cart.general.title' | t }}</div>
+      <div class="drawer__close js-drawer-close">
+        <button type="button" class="minicart_close icon-fallback-text">
+          <span class="fallback-text" title="{{ 'cart.general.close_cart' | t }}">{% include 'icon-close' %}</span>
+        </button>
+      </div>
+    </div>
+    <div id="CartContainer"></div>
+  </div>
+</div>

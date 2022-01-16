@@ -1,0 +1,52 @@
+{% assign css = css | append: '.footer-2' %}
+{% assign css = css | append: ' .footer-center-wrap {' %}
+{% capture bg_style %} background:{{ settings.bg_section }};{% endcapture %} 
+{% assign css = css | append: bg_style %}   
+{% assign css = css | append: '}' %}
+
+<script type="text/javascript">
+ var css = "{{ css }}",
+      head = document.head || document.getElementsByTagName('head')[0],
+      style = document.createElement('style');
+
+  style.type = 'text/css';
+  if (style.styleSheet){
+    style.styleSheet.cssText = css;
+  } else {
+    style.appendChild(document.createTextNode(css));
+  }
+  head.appendChild(style);
+</script>
+<div class="footer-container">
+    <section id="footercenter" class="footer-center">
+        <div class="{{set-box}}">
+            <div class="footer-center-wrap">
+                <div class="row">
+                    <div class=" col-xs-12">
+                        {% if settings.homepage_newsletter_enable %}
+                            {% include 'block-newsletter' %}
+                        {% endif %}
+                        {% if settings.footer_social_enable %}
+                            {% include 'block-social' %}
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="{{set-box}}">
+    <div id="footernav" class="footer-nav">
+        <div id="powered">
+                  {% if settings.footer_quicklinks_enable %}
+                    {% assign footerlinks_name = settings.footer_quicklinks_linklist %}
+                    {% assign footerlinks_title = settings.footer_quicklinks_title %}
+                    {% include 'block-footerlinks' with '1' %}
+                  {% endif %}
+                  <div  class="powered ">
+                     <p>&copy; Copyright {{ "now" | date: "%Y" }} {{ shop.name }}. {{ powered_by_link }}</p>
+                  </div>
+          </div>
+    </div>
+    </section>
+</div>

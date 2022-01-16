@@ -1,0 +1,311 @@
+{% assign number_of_comments = article.comments_count %}
+{% if comment and comment.created_at %}
+    {% assign number_of_comments = article.comments_count | plus: 0 %}
+{% endif %}
+{% assign column_center = 'col-xs-12 col-sm-12 col-md-12' %}
+{% include 'breadcrumb' %}
+<section id="columns" class="columns-container">
+ <div class="page-width">
+   <div class="container">
+    <div class="row">
+      {% if section.settings.blog-sidebar-enable %}
+      <aside>
+        <div {% if section.settings.layout-sidebar == 'left' %}id="left_column" {% else section.settings.layout-sidebar == 'right'%}id="right_column" {% endif %} class=" sidebar col-xs-12 col-sm-4 col-md-4 {% if section.settings.layout-sidebar == 'left' %}left_column pull-left {% else section.settings.layout-sidebar == 'right' %}right_column pull-right{%endif%}">
+          {% include 'blog-sidebar' %}
+        </div>
+      </aside>
+      {% endif %}
+      <article id="blogpage" class="blog-detail blog-container col-xs-12 {% if section.settings.blog-sidebar-enable %}col-sm-8 col-md-8{% endif %}" itemscope itemtype="http://schema.org/NewsArticle">
+        <meta itemscope itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" itemid="https://google.com/article"/>
+        <meta itemprop="headline" content="{{ article.title }}" />
+        <div class="hidden" itemprop="author" itemscope itemtype="https://schema.org/Person">
+          <meta itemprop="name" content="{{ article.author }}" />
+        </div>
+        <div class="hidden" itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
+          <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
+            <img src="{{ 'logo.png' | asset_url }}"/>
+            <meta itemprop="url" content="http:{{ 'logo.png' | asset_url }}">
+          </div>
+          <meta itemprop="name" content="article.author">
+        </div>
+        <meta itemprop="datePublished" content="{{ article.published_at | date: '%Y-%m-%d' }}" />
+        <meta itemprop="dateModified" content="{{ article.published_at | date: '%Y-%m-%d' }}"/>
+        <div class="section-header text-center">
+          <h1 class="article__title">{{ article.title }}</h1>
+          <div class="article__meta">
+            {% if section.settings.blog_show_author %}
+            <span class="article__author"><i class="fa fa-user"></i>{{ 'blogs.article.by_author' | t: author: article.author }}</span>
+            {% endif %}
+
+            {% if section.settings.blog_show_date %}
+            <span class="article__date">
+              <i class="fa fa-calendar"></i>
+              <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+            </span>
+            {% endif %}
+          </div>
+        </div>
+        <div class="blog-content">
+          {% if article.image %}
+          {% assign imageSize = settings.blogpage_imagesize %}
+          <div class="imageFeatured" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+            {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+            <!--<img class="img-responsive" src="{{ article.image | img_url: imageSize }}" alt="{{ article.title }}" />-->
+            <img 
+                class="lazyload "
+                src="{{ article.image | img_url: 'master' }}"
+                data-src="{{ img_url }}"
+                data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                data-aspectratio="{{ article.image.aspect_ratio }}"
+                data-sizes="auto"
+                alt="{{ article.image.alt | escape }}">
+                <noscript>
+                {% assign card_image = type | img_url: 'master' %}
+                <img src="{{ card_image }}" alt="{{ type.alt | escape }}" class="card__image">
+                </noscript>
+            <meta itemprop="url" content="http:{{ article.image | img_url: imageSize }}">
+            <meta itemprop="width" content="800">
+            <meta itemprop="height" content="800">
+          </div>
+          {% endif %}
+          <div class="row">
+            <div class=" col-xs-12 {% unless section.settings.blog-sidebar-enable %} col-md-8 col-md-offset-2 {% endunless %}">
+              <div class="rte" itemprop="articleBody">
+                {% include 'shortcode' load: article.content %}
+              </div>
+              <div class="row">
+                {% if article.tags.size > 0 %}
+                <div class="article__tags rte col-md-6 col-xs-12">
+                  <span class="icon-tag">{{ 'blogs.article.tags' | t }}:</span>
+                  {% for tag in article.tags %}
+                  <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article__grid-tag"> {{ tag }} </a>
+                  {% endfor %}
+                </div>
+                {% endif %}
+                {% if section.settings.show_share_buttons %}
+                  <div class="col-md-6 text-right col-xs-12">
+                  {% include 'social-sharing', share_title: article.title, share_permalink: article.url, share_image: article.image %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+             <div class="{% unless section.settings.blog-sidebar-enable %} col-md-8 col-md-offset-2 {% endunless %} col-xs-12">
+                <hr>
+                <div class="clearfix next-prev-post">
+                <div class="previous box-np">
+                  <a href="{{ blog.previous_article }}" class=" link-post" ><svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="prev-icon pull-left" x="0" y="0" width="50" height="40" viewBox="0 0 50 40" enable-background="new 0 0 50 40" xml:space="preserve" aria-disabled="true" display="block">
+                  <path d="M15.3 19.2c0 0 0 0-0.1 0.1 0 0 0 0 0 0 0 0 0 0 0 0-0.1 0.2-0.2 0.4-0.2 0.7 0 0.2 0.1 0.5 0.2 0.7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0.1l3.8 3.9c0.4 0.4 1.1 0.4 1.5 0 0.4-0.4 0.4-1.1 0-1.6l-2-2h15.3c0.6 0 1.1-0.5 1.1-1.1 0-0.6-0.5-1.1-1.1-1.1H18.6l2-2c0.4-0.4 0.4-1.1 0-1.6-0.4-0.4-1.1-0.4-1.5 0l-3.8 3.9C15.3 19.2 15.3 19.2 15.3 19.2z"/>
+                </svg> <span>Previous Post </span></a>
+                </div>
+                <div class="next box-np">
+                      <a href="{{ blog.next_article }}" class="link-post" > Next Post <svg xmlns="http://www.w3.org/2000/svg" version="1.1" class="next-icon pull-right" x="0" y="0" width="50" height="40" viewBox="0 0 50 40" enable-background="new 0 0 50 40" xml:space="preserve" aria-disabled="false" display="block">
+                        <path d="M34.7 19.2L30.9 15.3c-0.4-0.4-1.1-0.4-1.5 0-0.4 0.4-0.4 1.1 0 1.6l2 2H16.1c-0.6 0-1.1 0.5-1.1 1.1 0 0.6 0.5 1.1 1.1 1.1h15.3l-2 2c-0.4 0.4-0.4 1.1 0 1.6 0.4 0.4 1.1 0.4 1.5 0l3.8-3.9c0 0 0 0 0.1-0.1 0 0 0 0 0 0 0 0 0 0 0 0 0.1-0.2 0.2-0.4 0.2-0.7 0-0.2-0.1-0.5-0.2-0.7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0-0.1-0.1C34.7 19.2 34.7 19.2 34.7 19.2z"/>
+                        </svg>
+                    </a>
+                </div>
+                </div>
+                <hr>
+             </div>
+          </div>
+          <div class="row related-blog">
+             <div class="{% unless section.settings.blog-sidebar-enable %} col-md-8 col-md-offset-2 {% endunless %} col-xs-12 ">
+                <div class="section-header text-center ">
+                    <h4><span>You Might Also Like</span></h4>
+                </div>
+                <div class="row grid--blog">
+                   {%- for article in blogs[blog.handle].articles limit:3 -%}
+                   <div class="col-xs-12 col-md-4">
+                     {%- if article.image -%}
+                      <div class="article__grid">
+                           {%- assign img_url = article.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                           <a class="article__grid-image" href="{{ article.url }}" style="min-height: {{ 1 | divided_by: article.image.aspect_ratio | times: 100}}px">
+                             <img 
+                             class="lazyload"
+                             src="{{ article.image | img_url: 'master' }}"
+                             data-src="{{ img_url }}"
+                             data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]"
+                             data-aspectratio="{{ article.image.aspect_ratio }}"
+                             data-sizes="auto"
+                             alt="{{ article.image.alt | escape }}">
+                             <span class="card__preloader"></span>
+                             <noscript>
+                              {% assign card_image = type | img_url: 'master' %}
+                               <img src="{{ card_image }}" alt="{{ type.alt | escape }}" class="card__image">
+                             </noscript>
+                           </a>
+                         </div>
+                      {%- endif -%}
+                     
+                     <div class="article--des article__grid-meta {% if article.image %} article__grid-meta--has-image {% endif %}">
+                        <div class="article__meta">
+                          {%- if section.settings.blog_show_date -%}
+                          <span class="article__date">
+                            <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{{ article.published_at | date: format: 'month_day_year' }}</time>
+                          </span>
+                          {%- endif -%}
+                       </div>
+                       <h4 class="article__title h4">
+                         <a href="{{ article.url }}">{{ article.title }}</a>
+                       </h4>
+                     </div>
+                   </div>
+                   {%- endfor -%}
+                </div>
+             </div>
+          </div>
+          
+          {% if blog.comments_enabled? %}
+            {% if number_of_comments > 0 %}
+              
+              <div class="row">
+                <div class="col-xs-12 {% unless section.settings.blog-sidebar-enable %} col-md-8 col-md-offset-2 {% endunless %}">
+                  <hr>
+                  <div class="block-comment">
+                  <h2 class="h3">{{ 'blogs.comments.comments_with_count' | t: count: number_of_comments }}</h2>
+
+                  {% paginate article.comments by 5 %}
+
+                    {% comment %}
+                      #comments is required, it is used as an anchor link by Shopify.
+                    {% endcomment %}
+                    <div id="comments">
+
+                      {% if comment and comment.created_at %}
+                        <p class="note form-success">
+                          {% if blog.moderated? %}
+                            {{ 'blogs.comments.success_moderated' | t }}
+                          {% else %}
+                            {{ 'blogs.comments.success' | t }}
+                          {% endif %}
+                        </p>
+                      {% endif %}
+
+                      <ul class="comments">
+                        {% comment %}
+                          If a comment was just submitted with no blank field, show it.
+                        {% endcomment %}                          
+
+                        {% for comment in article.comments %}
+                          <li id="{{ comment.id }}" class="comment">
+                            {% include 'comment' %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+
+                      {% if paginate.pages > 1 %}
+                        {% include 'pagination' %}
+                      {% endif %}
+
+                    </div>
+                  {% endpaginate %}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+
+           
+            <div class="row">
+              <div class="col-xs-12 {% unless section.settings.blog-sidebar-enable %} col-md-8 col-md-offset-2 {% endunless %}">
+                <hr>
+                <div class="comment-form form-vertical">
+                  {% form 'new_comment', article %}
+
+                  <h2 class="h3">{{ 'blogs.comments.title' | t }}</h2>
+
+                  {{ form.errors | default_errors }}
+
+                  <div class="row">
+
+                    <div class="col-xs-12 col-md-6">
+                      <label for="CommentAuthor">{{ 'blogs.comments.name' | t }}</label>
+                      <input type="text" name="comment[author]" id="CommentAuthor" class="input-full{% if form.errors contains 'author' %} input--error{% endif %}" value="{{ form.author }}">
+                    </div>
+
+                    <div class="col-xs-12 col-md-6">
+                      <label for="CommentEmail">{{ 'blogs.comments.email' | t }}</label>
+                      <input type="email" name="comment[email]" id="CommentEmail" class="input-full{% if form.errors contains 'email' %} input--error{% endif %}" value="{{ form.email }}" autocorrect="off" autocapitalize="off">
+                    </div>
+
+                    <div class="col-xs-12 col-md-12">
+                      <label for="CommentBody">{{ 'blogs.comments.message' | t }}</label>
+                      <textarea name="comment[body]" id="CommentBody" class="input-full{% if form.errors contains 'body' %} input--error{% endif %}">{{ form.body }}</textarea>
+                    </div>
+
+                  </div>
+
+                  {% if blog.moderated? %}
+                  <p class="fine-print">{{ 'blogs.comments.moderated' | t }}</p>
+                  {% endif %}
+
+                  <input type="submit" class="btn btn-outline" value="{{ 'blogs.comments.post' | t }}">
+                  {% endform %}
+                </div>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="text-center return-link-wrapper">
+            <a href="{{ blog.url }}" class="btn btn--secondary btn--has-icon-before return-link">
+              {% include 'icon-arrow-left' %}
+              {{ 'blogs.article.back_to_blog' | t: title: blog.title }}
+            </a>
+          </div>
+        </div>
+      </article>      
+    </div>
+  </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Posts",
+  "settings": [
+	{
+      "type": "header",
+      "content": "Sidebar Setting"
+    },
+    {
+      "type": "checkbox",
+      "id": "blog-sidebar-enable",
+      "label": "Sidebar Enable",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "layout-sidebar",
+      "label": "Layout Sidebar",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_author",
+      "label": "Show author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "blog_show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_share_buttons",
+      "label": "Show social sharing buttons",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

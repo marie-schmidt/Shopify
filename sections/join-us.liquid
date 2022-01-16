@@ -1,0 +1,104 @@
+{% if section.settings.enable_block_join %}
+	<div class="row">
+	  <div class="col-md-6 com-sm-6 col-xs-12">
+	  		<div class="block--joint">
+	  			{% if section.settings.title_page_about_1 != blank %}
+	          <h4 class="page-subheading">{{ section.settings.title_page_about_1 }}</h4>
+	        {% endif %}
+	        {% if section.settings.des_page_about_1 != blank %}
+	          <div class="block_content">
+	            {{ section.settings.des_page_about_1 }}
+	          </div>
+	        {% endif %}
+	  		</div>
+        <div class="block--jointtact">
+          {% if section.settings.title_adress != blank %}
+          <h4 class="page-subheading">{{section.settings.title_adress}}</h4>
+          {% endif %}
+          <ul class="list-group list-unstyled list-contact">
+            {% if section.settings.address_about != blank %}
+                <li><i class="fa fa-map-marker"></i>{{ section.settings.address_about }}</li>
+            {% endif %}
+            {% if section.settings.address_number != blank %}
+                <li><i class="fa fa-phone-square"></i>{{ section.settings.address_number }}</li>
+            {% endif %}
+            {% if section.settings.address_contact != blank %}
+                <li><i class="fa fa-envelope"></i>{{ section.settings.address_contact }}</li>
+            {% endif %}
+            {% if section.settings.work != blank %}
+                <li><i class="fa  fa-clock-o"></i> {{ section.settings.work }}</li>
+            {% endif %}
+          </ul>
+        </div>
+	  </div>
+    {% if section.settings.enable_img_about %}
+      <div class="col-md-6 com-sm-6 col-xs-12">
+          {% if section.settings.image_abouts != blank %}
+            {{ section.settings.image_abouts | img_url: '600x' | img_tag: section.settings.image_abouts.alt, 'img-responsive' }}
+          {% else %}
+            {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+          {% endif %}
+      </div>
+    {% endif %}
+	</div>
+{% endif %}
+{% schema %}
+{
+  "name": "About Page Contact",
+  "settings": 
+    [
+    	{
+        "type": "checkbox",
+        "id": "enable_block_join",
+        "label": "Enable Block Join Us",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_img_about",
+        "label": "Use image top",
+        "default": true
+      },
+      {
+        "type": "image_picker",
+        "id": "image_abouts",
+        "label": "Image top"
+      },
+      {
+        "type": "text",            
+        "id": "title_page_about_1",
+        "label": "Title 1 "
+      },
+      {
+        "type": "richtext",            
+        "id": "des_page_about_1",
+        "label": "Description 1 "
+      },
+      {
+        "type": "text",            
+        "id": "title_adress",
+        "label": "Block Contacts"
+      },
+      {
+        "type": "text",            
+        "id": "address_about",
+        "label": "Address"
+      },
+      {
+        "type": "text",            
+        "id": "address_number",
+        "label": "Number"
+      },
+      {
+        "type": "text",            
+        "id": "address_contact",
+        "label": "Email"
+      },
+      {
+        "type": "text",            
+        "id": "work",
+        "label": "Open Time"
+      }
+    ]
+}
+{% endschema %}

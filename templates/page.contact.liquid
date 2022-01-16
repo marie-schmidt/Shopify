@@ -1,0 +1,20 @@
+{% include 'breadcrumb' %}
+<section id="columns" class="columns-container contact">
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <div class="section-header text-center">
+        <h1>{{ page.title }}</h1>
+      </div>
+
+      {% if page.content.size > 0 %}
+        <div class="rte">
+          {{ page.content }}
+        </div>
+      {% endif %}
+      {% section 'map-contact' %}
+      {% section 'form-contacts' %}
+    </div>
+  </div>
+</div>
+</section>

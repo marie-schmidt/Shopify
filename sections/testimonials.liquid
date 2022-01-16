@@ -1,0 +1,172 @@
+{%- include 'set_layout' -%}
+{%- if section.settings.img_testi != blank  -%}
+  {%- assign img_url = section.settings.img_testi | img_url: 'master' -%}
+{%- else -%}
+  {%- assign img_url = '' -%}
+{%- endif -%}
+<style>
+  .quotes-wrapper .quotes-slider .rte-setting p{
+    color:{{section.settings.color_quote}} !important;
+    font-size:{{section.settings.font_size_quote}};
+  }
+  .quotes-wrapper .quotes-slider cite{
+    color:{{section.settings.color_author}} !important;
+  }
+  
+</style>
+<div class="block-section" >
+   <div class="block_content {{set-box}} " data-section-id="{{ section.id }}" data-section-type="quotes">
+    <div class="lazyload" {% if section.settings.custom_space != blank %} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }};background-size:cover;" {% endif %} {% if section.settings.img_testi != blank %} data-bgset="{% include 'bgset', image: section.settings.img_testi %}" data-sizes="auto" data-parent-fit="cover" {% endif %}>
+     {% if section.settings.title != blank %}
+         {% include 'style_header' %}
+         <div class="section-header text-center {{ title_style }} {{ size_title }}">
+            <h2 style="color:{{section.settings.color_title}}"><span>{{ section.settings.title | escape }}</span></h2>
+         </div>
+     {% endif %}
+
+     {% if section.blocks.size > 0 %}
+       <div class="quotes-wrapper">
+         <div class="quotes-slider" id="Quotes-{{ section.id }}" data-count="{{ section.blocks.size }}">
+           {% for block in section.blocks %}
+             <div class="quotes-slide--{{ block.id }}" {{ block.shopify_attributes }}>
+               <blockquote class="quotes-slider__text text-center">
+                 {% if block.settings.image != blank %}
+                  <div class="image__testimonial">
+                     <img src="{{block.settings.image | img_url: '110x110'}}" class="img-responsive img-circle" alt="{{block.settings.author | escape }}">
+                  </div>
+                {% else %}
+                 <div class="image__testimonial" style="width: 60px;height: 60px; margin: 0 auto;">
+                  {{ 'logo' | placeholder_svg_tag: 'placeholder-svg' }}
+                 </div>
+                {% endif %}
+                 {% if block.settings.quote != blank %}
+                   <div class="rte-setting" >{{ block.settings.quote }}</div>
+                 {% endif %}
+                 {% if block.settings.author != blank %}
+                   <cite >{{ block.settings.author }}</cite>
+                 {% endif %}
+               </blockquote>
+             </div>
+           {% endfor %}
+         </div>
+       </div>
+     {% endif %}
+
+     {% if section.blocks.size == 0 %}
+       {% include 'no-blocks' %}
+     {% endif %}
+     </div>
+   </div>
+</div>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "class": "index-section",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "custom_space",
+      "label": "Css Style Section",
+      "default":"padding-top:100px;padding-bottom:100px"
+    },
+    {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "none",
+       "info":      "Set Layout Section"
+    },
+    {
+      "type": "color",
+      "id": "bg_section",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "image_picker",
+      "id": "img_testi",
+      "label": "Background"
+    },
+    {
+      "type": "color",
+      "id": "color_title",
+      "label": "color Title",
+      "default" : "#222"
+    },
+    {
+      "type": "color",
+      "id": "color_quote",
+      "label": "color Quote",
+      "default" : "#777"
+    },
+    {
+      "type": "color",
+      "id": "color_author",
+      "label": "color Author",
+      "default" : "#222"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Testimonials"
+    },
+    {
+      "type": "text",
+      "id": "font_size_quote",
+      "label": "Font Size Content",
+      "default": "16px"
+    }
+
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Quote",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": " Image Author"
+        },
+        {
+          "type": "richtext",
+          "id": "quote",
+          "label": "Text",
+          "default": "<p>Add customer reviews and testimonials to showcase your store’s happy customers.</p>"
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Author",
+          "default": "Author's name"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Testimonials",
+      "category": "Text",
+      "blocks": [
+        {
+          "type": "quote"
+        },
+        {
+          "type": "quote"
+        },
+        {
+          "type": "quote"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

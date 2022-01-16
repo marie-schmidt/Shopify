@@ -1,0 +1,370 @@
+{% unless min_height %}
+  {% assign min_height = "600px" %}
+{% endunless %}
+{% assign data = "" %}
+{% assign sep = "" %}
+{%- for block in section.blocks -%}
+   {% if block.settings.map_title.size > 0 and block.settings.map_address.size > 0 %}
+       {% assign lat = block.settings.map_lat | plus:0 %}
+       {% assign long = block.settings.map_long | plus:0 %}
+       {% if lat != 0 and long != 0 %}
+            {% if data.size > 0 %}
+               {% assign sep = ',' %}
+            {% endif %}
+           {% assign name = block.settings.map_title | escape %}
+           {% assign address = block.settings.map_address | escape %}
+           {% assign data = data | append: sep| append: '{"id_store":"1", "name":"' | append: name | append: '",'%}
+           {% assign data = data | append: '"address":"' | append: address | append: '", "latitude":"' | append: block.settings.map_lat | append: '",' %}
+           {% assign data = data | append: '"longitude":"' | append: block.settings.map_long | append: '"}' %}
+       {% endif %}
+   {% endif %}
+{% endfor %}
+{%- include 'set_layout' -%}
+<div class="block-section lazyload " {%- if section.settings.custom_space -%} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }};" {%- endif -%}>
+  <div  class="block_content {{set-box}} ">
+   <div id="google-maps" class="block google-maps" style="width: 100%; min-height:{{ min_height }}; clear:both;">
+      <div class="gmap-cover display-list-store">
+         <div class="gmap-content">
+            <div id="map-canvas" class="gmap" style="min-height:{{ min_height }}; width:100%; height: 100%;"></div>
+         </div>
+      </div>
+      <script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=true&amp;amp;region=US"></script>
+      <script type="text/javascript">
+           var dataMarkers = [{{ data }}];
+           var latitude = (dataMarkers.length > 0 ? parseFloat(dataMarkers[0].latitude) : 45.422230);
+           var longitude = (dataMarkers.length > 0 ? parseFloat(dataMarkers[0].longitude) : -75.692413);
+           var infowindow = null;
+           var map = "";
+           var markers = [];
+           var infoWindow = "";
+           var zoom = {% if section.settings.map_zoom %}{{ section.settings.map_zoom}} {% else %}14{% endif %};
+
+           function displayAMarker(data, obj, id) {
+               var m = markers[id];
+               google.maps.event.trigger(m, 'click');
+           }
+           function initializeListStore(data, name) {
+               var obj = $("#" + name + " ul");
+               synSize(name);
+               for(var i = 0; i < data.length; i++) {
+                   var s = data[i];
+                   obj.append("<li class='item-gmap-store' marker-id='" + i + "'" 
+                           + "onclick='return displayAMarker(dataMarkers, this, " + i + ");'>"
+                           + "<strong><b><span class='icon-map-marker'></span> "
+                           + s.name + "</b></strong><br/><text>" + s.address + "</text>");
+               }
+           }
+           function initializeGmap(map, data, markers, nameGmap, zoom) {
+               map = new google.maps.Map(document.getElementById(nameGmap), {
+                   center: new google.maps.LatLng(latitude, longitude),
+                   zoom: zoom,
+                   mapTypeId: 'roadmap',
+                   styles:[
+                         {
+                             "featureType": "all",
+                             "elementType": "labels.text.fill",
+                             "stylers": [
+                                 {
+                                     "saturation": 36
+                                 },
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 40
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "all",
+                             "elementType": "labels.text.stroke",
+                             "stylers": [
+                                 {
+                                     "visibility": "on"
+                                 },
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 16
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "all",
+                             "elementType": "labels.icon",
+                             "stylers": [
+                                 {
+                                     "visibility": "off"
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "administrative",
+                             "elementType": "geometry.fill",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 20
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "administrative",
+                             "elementType": "geometry.stroke",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 17
+                                 },
+                                 {
+                                     "weight": 1.2
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "landscape",
+                             "elementType": "geometry",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 20
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "poi",
+                             "elementType": "geometry",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 21
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "road.highway",
+                             "elementType": "geometry.fill",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 17
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "road.highway",
+                             "elementType": "geometry.stroke",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 29
+                                 },
+                                 {
+                                     "weight": 0.2
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "road.arterial",
+                             "elementType": "geometry",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 18
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "road.local",
+                             "elementType": "geometry",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 16
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "transit",
+                             "elementType": "geometry",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 19
+                                 }
+                             ]
+                         },
+                         {
+                             "featureType": "water",
+                             "elementType": "geometry",
+                             "stylers": [
+                                 {
+                                     "color": "#000000"
+                                 },
+                                 {
+                                     "lightness": 17
+                                 }
+                             ]
+                         }
+                     ]
+               });
+               setTimeout(createMarkers(map, markers, data), 1500);
+           };
+           function createMarkers(map, markers, data) {
+               for (var i = 0; i < data.length; i++) {
+                   var obj = data[i];
+                   var lg = parseFloat(obj.longitude);
+                   var lt = parseFloat(obj.latitude);
+                   var name = obj.name;
+                   var address = obj.address;
+
+                   var latlng = new google.maps.LatLng(lt, lg);
+                   var html = "<div style='min-width:200px;'><b>" + name + "</b><br/>" + address; 
+                   html += "<hr/><a href='https://maps.google.com/maps?saddr=&daddr=" + latlng + "' target='_blank'>Get directions<\/a>";
+                   html += "</div>"; 
+
+                   infowindow = new google.maps.InfoWindow({
+                       content: "loading..."
+                   });
+
+                   var marker = new google.maps.Marker({
+                       position: new google.maps.LatLng(lt, lg), 
+                       animation: google.maps.Animation.DROP, 
+                       map: map,
+                       //icon: img_ps_dir + logo_store,
+                       title: obj.name,
+                       html: html
+                   });
+
+                   google.maps.event.addListener(marker, "click", function () {
+                       infowindow.setContent(this.html);
+                       infowindow.open(map, this);
+                   });
+                   markers[i] = marker;
+               }
+           }
+           function synSize(name) {
+               var obj = $("#" + name);
+               var div = $(obj).closest(".gmap-cover");
+               var gmap = $(div).find(".gmap");
+               $(obj).height($(gmap).height());
+               //console.log($(gmap).height());
+           }
+           $(function() {
+               console.log(dataMarkers.length);
+               if(dataMarkers.length <= 1) {
+                   $(".gmap-content").attr("class", "gmap-content");
+                   $(".gmap-stores-content").css("display", "none");
+               }
+               initializeGmap(map, dataMarkers, markers, "map-canvas", zoom);
+               initializeListStore( dataMarkers, "gmap-stores-list");
+           });
+       </script>
+   </div>
+   </div>
+</div>
+
+{% schema %}
+{
+  "name": "Map",
+  "class": "index-section",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "custom_space",
+      "label": "Css Style Section",
+      "default":"padding-top:100px;padding-bottom:100px"
+    },
+   {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "none",
+       "info":      "Set Layout Section"
+    },
+   {
+     "type": "color",
+     "id": "bg_section",
+     "label": "Background color",
+     "default": "#ffffff"
+   },
+   {
+     "type": "text",
+     "id": "map_zoom",
+     "label": "Map Zoom",
+     "default": "14"
+   }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Location",
+      "settings": [
+        {
+           "type": "text",
+           "id": "map_title",
+           "label": "Shop Name",
+           "default": "Your Shop Name"
+         },
+         {
+           "type": "text",
+           "id": "map_address",
+           "label": "Shop Address",
+           "default": "Your Shop Address"
+         },
+         {
+           "type": "text",
+           "id": "map_lat",
+           "label": "Shop Latitude ",
+           "default": "45.422230"
+         },
+         {
+           "type": "text",
+           "id": "map_long",
+           "label": "Shop Longitude ",
+           "default": "-75.692413"
+         }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Map",
+      "category": "Store information",
+      "blocks": [
+        {
+          "type": "text"
+        },
+        {
+          "type": "text"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

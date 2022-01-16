@@ -1,0 +1,32 @@
+  {% comment %}
+  <!--   <div class="grid">
+<div class="grid__item medium-up--five-sixths medium-up--push-one-twelfth">
+<div class="section-header text-center">
+<h1>{{ page.title }}</h1>
+</div>
+
+<div class="rte">
+{{ page.content }}
+</div>
+</div>
+</div> -->
+  {% endcomment %}
+{% include 'breadcrumb' %}
+<section id="columns" class="columns-container">
+  	<div class="aboutus aboutus-v1">
+      <div class="container">
+        <section id="center_column">
+            <div class="page-wrap">                
+              <div class="rte">
+                {% section 'info-about'%}
+                {% section 'in-work'%}
+                {% section 'in-team'%}
+                {% section 'testimonials'%}
+                {% section 'in-contacts'%}
+                {% include 'shortcode' load: page.content %}
+              </div>
+          </div>
+        </section>
+      </div>     
+  </div>
+</section>

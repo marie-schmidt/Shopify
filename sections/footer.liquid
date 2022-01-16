@@ -1,0 +1,345 @@
+{%- assign social_icons = false -%}
+
+{% if
+  settings.social_twitter_link != blank
+  or settings.social_facebook_link != blank
+  or settings.social_pinterest_link != blank
+  or settings.social_instagram_link != blank
+  or settings.social_tumblr_link != blank
+  or settings.social_snapchat_link != blank
+  or settings.social_youtube_link != blank
+  or settings.social_vimeo_link != blank
+  or template contains 'article'
+  or template contains 'blog'
+%}
+  {%- assign social_icons = true -%}
+{% endif %}
+{%- include 'set_layout' -%}
+{%- if settings.img_footer != blank  -%}
+  {%- assign img_url = settings.img_footer | img_url: 'master' -%}
+{%- else -%}
+  {%- assign img_url = '' -%}
+{%- endif -%}
+<footer  class="lazyload site-footer {% if section.settings.enable_border_top %} border-top {% endif %} {% if section.settings.enable_parallax %}footer-parallax page-content {% endif %}"  {%- if section.settings.custom_space -%} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }};" {%- endif -%} data-bgset="{% include 'bgset', image: settings.img_footer %}" data-sizes="auto" data-parent-fit="cover">
+  <div class="{{ section.settings.footer-template-layout }}">
+    {% include section.settings.footer-template-layout %}
+  </div>
+</footer>
+
+
+{% if section.settings.enable_parallax %}
+<script type="text/javascript">
+   $(document).ready(function() {
+      respon_parallax();
+      $(window).on('resize', function(){
+         respon_parallax();
+      });
+   });
+  function respon_parallax(){
+      var footerParaHeight = $(".site-footer").outerHeight( true );
+      compensante = scrollCompensate();
+      if (($(window).width()+scrollCompensate()) < 1200)
+         {
+            $(".main-content").css("margin-bottom","0");
+            
+         }
+      else if (($(window).width()+scrollCompensate()) >= 1200)
+         {
+         $(".main-content").css("margin-bottom",footerParaHeight);
+      }
+   } 
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+      {
+        "type": "textarea",
+        "id": "custom_space",
+        "label": "Css Style Section",
+        "default":"padding-top:100px;padding-bottom:100px"
+      },
+      {
+         "type":      "radio",
+         "id":        "set_box",
+         "label":     "Set Layout Section",
+         "options": [
+           { "value": "box-container", "label": "Box Container" },
+           { "value": "box-full", "label": "Box Full" },
+           { "value": "none", "label": "None" }
+         ],
+         "default":   "box-full",
+         "info":      "Set Layout Section"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_parallax",
+        "label": "Enable footer scrolling parallax effect"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_border_top",
+        "label": "Border Top"
+      },
+      {
+        "type": "color",
+        "id": "bg_section",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+  	 {
+        "type": "header",
+        "content": "=== Select Multiple Footer"
+      },
+	  {
+      "type": "select",
+      "id": "footer-template-layout",
+      "label": "Layout Footer",
+      "default": "footer-1",
+      "options": [
+        {
+        "value": "footer-1",
+        "label": "Footer Style 1"
+        },
+        {
+        "value": "footer-2",
+        "label": "Footer Style 2"
+        },
+        {
+        "value": "footer-3",
+        "label": "Footer Style 3"
+        },
+        {
+        "value": "footer-4",
+        "label": "Footer Style 4 -3 Columns"
+        },
+        {
+        "value": "footer-5",
+        "label": "Footer Style 5 Creative"
+        }
+      ],
+      "info": "Select template Footer"
+    },
+    {
+      "type": "header",
+      "content": "------ * Footer 2 * ------"
+    },
+
+    {
+      "type": "color",
+      "id": "bg_foot2",
+      "label": "Background Newletter Footer 2",
+      "default": "#f5ebeb"
+    },
+    {
+      "type": "header",
+      "content": "------ * Footer 5 * ------"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "Block About on left"
+        },
+        {
+          "value": "right",
+          "label": "Block About on right"
+        }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "logo_max_width",
+      "label": "Custom logo width (in pixels)",
+      "default": "123"
+    },
+    {
+      "type": "text",
+      "id": "title_aboutus_footer",
+      "label": "Title About Footer"
+    },
+    {
+      "type": "textarea",
+      "id": "des_about_footer",
+      "label": "Description About Footer"
+    },
+    {
+      "type": "textarea",
+      "id": "support_call",
+      "label": "Support Call"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Color Text",
+      "default": "#c0c0c0"
+    },
+    {
+      "type": "color",
+      "id": "bg_newletter_left",
+      "label": "Background Newletter Left",
+      "default": "#e5f7f7"
+    },
+    {
+      "type": "color",
+      "id": "bg_about_right",
+      "label": "Background About Right",
+      "default": "#faebe8"
+    },
+	  {
+        "type": "header",
+        "content": "Newsletter"
+      },
+      {
+        "type": "checkbox",
+        "id": "homepage_newsletter_enable",
+        "label": "Show Newsletter Field"
+      },
+      {
+        "type": "text",
+        "id": "homepage_newsletter_title",
+        "label": "Newsletter Title"
+      },
+      {
+        "type": "textarea",
+        "id": "homepage_newsletter_des",
+        "label": "Newsletter Description"
+      },
+      {
+        "type": "text",
+        "id": "homepage_newsletter_sub",
+        "label": "Newsletter Notification"
+      },
+      {
+        "type": "text",
+        "id": "newsletter_form_action",
+        "label": "MailChimp Form Action URL",
+        "info": "[Where do I find my MailChimp form action URL?](http:\/\/docs.shopify.com\/support\/configuration\/store-customization\/where-do-i-get-my-mailchimp-form-action)"
+      },
+      {
+      "type": "header",
+      "content": "Block Links Footer"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_quicklinks_enable",
+        "label": "1st Show quick links"
+      },
+      {
+        "type": "text",
+        "id": "footer_quicklinks_title",
+        "label": "1st Quick links link title"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_quicklinks_linklist",
+        "label": "1st Quick links link list"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_quicklinks_enable_1",
+        "label": "2st Show quick links"
+      },
+      {
+        "type": "text",
+        "id": "footer_quicklinks_title_1",
+        "label": "2st Quick links link title"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_quicklinks_linklist_1",
+        "label": "2st Quick links link list"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_quicklinks_enable_2",
+        "label": "3st Show quick links"
+      },
+      {
+        "type": "text",
+        "id": "footer_quicklinks_title_2",
+        "label": "3st Quick links link title"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_quicklinks_linklist_2",
+        "label": "3st Quick links link list"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_quicklinks_enable_3",
+        "label": "4st Show quick links"
+      },
+      {
+        "type": "text",
+        "id": "footer_quicklinks_title_3",
+        "label": "4st Quick links link title"
+      },
+      {
+        "type": "link_list",
+        "id": "footer_quicklinks_linklist_3",
+        "label": "4st Quick links link list"
+      },
+	    {
+        "type": "header",
+        "content": "Block Social"
+      },
+      {
+        "type": "checkbox",
+        "id": "footer_social_enable",
+        "label": "Show social media links"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_title",
+        "label": "Social media title"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_facebook_link",
+        "label": "Facebook link"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_twitter_link",
+        "label": "Twitter link"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_instagram_link",
+        "label": "Instagram link"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_pinterest_link",
+        "label": "Pinterest link"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_rss_link",
+        "label": "Rss link"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_youtube_link",
+        "label": "Youtube link"
+      },
+      {
+        "type": "text",
+        "id": "footer_social_googleplus_link",
+        "label": "Google Plus link"
+      }    
+  ]
+}
+{% endschema %}

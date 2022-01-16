@@ -1,0 +1,158 @@
+<style>
+	.block-look .section-header h1{
+		margin-top:0;
+		font-size: 28px;
+	   text-transform: capitalize;
+	   letter-spacing: normal;
+	   font-weight: 500;
+	}
+	#showLess {
+      display:none;
+   }
+</style>
+{% include 'set_layout' %}
+<div class="block-section--{{section.id}} block-look" data-section-id="{{ section.id }}" data-section-type="look2">
+	<div  class="block_content look3-wrapper {{set-box}}">
+		{% if section.settings.title != blank and  section.settings.sub_des != blank %}
+		    {% include 'style_header' %}
+		    <div class="section-header text-center {{ title_style }} {{ size_title }}">
+		    	{% if section.settings.title != blank %}
+		      <h1><span>{{ section.settings.title }}</span></h1>
+		      {% endif %}
+		      {% if section.settings.sub_des != blank %}
+		      <p class="des-look">{{ section.settings.sub_des }}</p>
+		      {% endif %}
+		    </div>
+	   {% endif %}
+		<div id ="lookver" class="lookv3 lookv2 ">
+			{%- for block in section.blocks -%}
+			     <div class="look-image">
+	              <div class=" lookv3__block lookv2__block clearfix {% cycle 'odd', 'even' %}">
+	              	<div class="col-md-6 col-sm-6 col-xs-12 lookv2__block--text no-padding">
+	              		<div class="txt-img">
+	              			<div class="txt-img-box">
+		              			<div class="media">
+										  <div class="media-left">
+										    <span class="lookv2__block--number">{{ forloop.index }} </span>
+										  </div>
+										  <div class="media-body">
+										  	{% if block.settings.title_block != blank %}
+										    	<h2 class="media-heading lookv2__title">{{block.settings.title_block}}</h2>
+										   {% endif %}
+										   {% if block.settings.link_block != blank %}
+										   <a class="lookv3__link " href="{{block.settings.link_block_link}}">{{block.settings.link_block}} <i class="fa fa-long-arrow-right"></i></a>
+										   {% endif %}
+										  </div>
+									</div>
+									{%- if block.settings.image == blank -%}
+								      <div style="height:300px;">
+								        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+								      </div>
+							      {% else %} 
+										{% assign img_url_1 = block.settings.image_1 | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+										<div class="scroll-animation revealedBox goRight " style="padding-top:{% unless block.settings.image_1 == blank %}{{ 1 | divided_by: block.settings.image_1.aspect_ratio | times: 100}}%{% else %}100%{% endunless %}">
+					              		<img data-src="{{ img_url_1 }}" data-sizes="auto" data-lazy="{{ block.settings.image_1 | img_url: 'master' }}" data-aspectratio="{{ block.settings.image_1.aspect_ratio }}"  data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" alt="{{ block.settings.image_1.alt | escape }}" class="lazyload img-responsive contentBox" data-sizes="auto">
+					              		<span></span>
+								          <noscript>
+								            <img src="{{ block.settings.image_1 | img_url: 'master' }}" alt="{{ block.settings.image_1.alt | escape }}" class="img-responsive">
+								          </noscript>
+							         </div>
+							      {% endif %}
+						      </div>
+		              	</div>
+	           		</div>
+	              	<div class="col-md-6 col-sm-6 col-xs-12 lookv2__block--img lookv3__block--img no-padding">
+	              		<div class="lookv2__block--box lookv3__block--box ">
+			              		{%- if block.settings.image == blank -%}
+								      <div style="height:580px;">
+								        {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+								      </div>
+							      {% else %} 
+								       {% assign img_url = block.settings.image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}
+								       <div class="scroll-animation revealedBox goRight " style="padding-top:{% unless block.settings.image == blank %}{{ 1 | divided_by: block.settings.image.aspect_ratio | times: 100}}%{% else %}100%{% endunless %}">
+					              		<img data-src="{{ img_url }}" data-sizes="auto" data-lazy="{{ block.settings.image | img_url: 'master' }}" data-aspectratio="{{ block.settings.image.aspect_ratio }}"  data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" alt="{{ block.settings.image.alt | escape }}" class="lazyload img-responsive contentBox" data-sizes="auto">
+					              		<span></span>
+								          <noscript>
+								            <img src="{{ block.settings.image | img_url: 'master' }}" alt="{{ block.settings.image.alt | escape }}" class="img-responsive">
+								          </noscript>
+							          </div>
+								   {%- endif -%}
+			              	</div>
+	              	   </div>
+	              </div>
+              </div>
+			{%- endfor -%}
+			<div class="text-center">
+				<div id="showLess" class="btn btn-outline-inverse">Show less</div>
+				<div id="loadMore" class="btn btn-outline">Load more</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% schema %}
+  {
+	 "name": "Lookbook Ver 3",
+	"class": "index-section",
+	 "settings": [
+	 {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "box-container",
+       "info":      "Set Layout Section"
+    },
+		{
+		  "type": "header",
+		  "content": "Lookbook"
+		},
+		{
+	      "type": "text",
+	      "id": "title",
+	      "label": "Heading"
+	    },
+	    {
+	      "type": "textarea",
+	      "id": "sub_des",
+	      "label": "Description"
+	    }
+		],
+		"blocks": [
+			{
+				"type": "image",
+				"name": "Image",
+				"settings": [
+				   {
+						"type": "image_picker",
+						"id": "image_1",
+						"label": "Image 1 "
+					},
+					{
+						"type": "image_picker",
+						"id": "image",
+						"label": "Image 2"
+					},
+					{
+						"type": "text",
+						"id": "title_block",
+						"label": "Title Block"
+					},
+					{
+						"type": "text",
+						"id": "link_block",
+						"label": "Name Link"
+					},
+					{
+						"type": "url",
+						"id": "link_block_link",
+						"label": "Link Custom"
+					}
+				]
+			}
+		]
+  }
+{% endschema %}

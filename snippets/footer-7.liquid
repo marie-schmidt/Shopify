@@ -1,0 +1,46 @@
+<div class="footer-container">
+    <section id="footercenter" class="footer-center">
+        <div class="{{set-box}}">
+            <div class="footer-center-wrap">
+                <div class="row col--block">
+                    <div class="col-md-9 col-sm-12 col-xs-12 col-footer ">
+                        <div class=" box-footer box_links">
+                            <div class="row">
+                              <div class="col-md-4 col-sm-4 col-xs-12">
+                                <div class="block footer-block">
+                                  <h4 class="title_block">
+                                    <a href="/" itemprop="url" class="footer_logo">
+                                      {% capture logo_alt %}{{ settings.logo_footer.alt | default: shop.name }}{% endcapture %}
+                                      <img class="lazyload js"
+                                           src="{{ settings.logo_footer | img_url: '300x300' }}"
+                                           alt="{{ logo_alt | escape }}"
+                                           style="max-width: {{ settings.logo_max_width_footer }}px">
+                                    </a>
+                                   </h4>
+                                   <p>&copy; Copyright {{ "now" | date: "%Y" }} {{ shop.name }}. {{ powered_by_link }}</p>
+                                </div>
+                              </div>
+                              <div class="col-md-8 col-sm-8 col-xs-12">
+                                {% if settings.footer_quicklinks_enable %}
+                                {% assign footerlinks_name = settings.footer_quicklinks_linklist %}
+                                {% assign footerlinks_title = settings.footer_quicklinks_title %}
+                                {% include 'block-footerlinks' with '1' %}
+                                {% endif %}
+                                {% if settings.footer_social_enable %}
+                                  {% include 'block-social' %}
+                                {% endif %}
+                              </div>
+                              
+                            </div>
+                        </div>
+                    </div>
+                     <div class="col-md-3 col-sm-12 col-xs-12">
+                      {%- if settings.homepage_newsletter_enable -%}
+                        {% include 'block-newsletter' %}
+                      {%- endif -%}
+                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,177 @@
+<style>
+  #shopify-section-{{ section.id }}{
+   {%- if section.settings.custom_space_p != blank -%}
+      padding:{{ section.settings.custom_space_p }};
+   {%- endif -%}
+   {%- if section.settings.custom_space_m != blank -%}
+      margin:{{ section.settings.custom_space_m }};
+   {%- endif -%}
+   background-color: {{section.settings.bg_section }};
+  }
+</style>
+<div class="block-section">
+{% include 'block-instagram' %} 
+</div>
+{% schema %}
+  {
+    "name": "Instagram",
+	"class": "index-section",
+    "settings": [
+       {
+        "type": "text",
+        "id": "custom_space_p",
+        "label": "Padding Section",
+        "default":"100px 0 100px 0",
+        "info":"Ex: 100px 0 100px 0"
+      },
+      {
+        "type": "text",
+        "id": "custom_space_m",
+        "label": "Margin Section",
+        "default":"0 0 0 0",
+        "info":"Ex: 100px 0 100px 0"
+      },
+      {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "box-full",
+       "info":      "Set Layout Section"
+    },
+      {
+        "type": "color",
+        "id": "bg_section",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+	    {
+        "type": "header",
+        "content": "Instagram Photo"
+      },
+      {
+        "type": "text",
+        "id": "urlto_instagram",
+        "label": "Url to instagram",
+        "default": "https:\/\/instagram.com\/apollotheme"
+      },
+      {
+        "type": "text",
+        "id": "linkall_instagram",
+        "label": "Text for link instagram",
+        "default": "View all in instagram"
+      },
+      {
+        "type": "text",
+        "id": "client-id",
+        "label": "Client Id",
+        "default": "f771ffd9812544e99d187d82867f84a2",
+        "info": "[Where do I find Client ID?](http:\/\/darkwhispering.com\/how-to\/get-a-instagram-client_id-key)"
+      },
+      {
+        "type": "text",
+        "id": "user-id",
+        "label": "User Id",
+        "default": "5894711894",
+        "info": "Use when Get Image from: 'User'. [Where do I find User ID and Access Token?](http:\/\/http://instagram.pixelunion.net\/)"
+      },
+      {
+        "type": "text",
+        "id": "accessToken",
+        "label": "Access Token",
+        "default": "5894711894.f771ffd.a0204731c7e14f36949635f50922a0d7",
+        "info": "Required to use when Get Image from: 'User'."
+      },
+	  {
+        "type": "select",
+        "id": "img-size",
+        "label": "Get Size Image",
+        "options": [
+          {
+            "value": "low_resolution",
+            "label": "low_resolution"
+          },
+          {
+            "value": "thumbnail",
+            "label": "thumbnail"
+          },
+          {
+            "value": "standard_resolution",
+            "label": "standard_resolution"
+          }
+        ],
+        "default": "low_resolution"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_dot",
+        "label": "Enable Next/Prev",
+        "default":false
+      },
+      {
+        "type": "text",
+        "id": "columns_image",
+        "label": "Column Image",
+        "default": "6"
+      },
+      {
+        "type": "text",
+        "id": "instagram_limit",
+        "label": "limit",
+        "default": "10"
+      },
+      {
+        "type": "radio",
+        "id": "style_insta",
+        "label": "Style Layout",
+        "options": [
+          {
+            "value": "style_1",
+            "label": "Style 1"
+          },
+          {
+            "value": "style_2",
+            "label": "Style 2"
+          }
+        ]
+      },
+      {
+        "type": "radio",
+        "id": "enable_like_insta",
+        "label": "Style Content",
+        "options": [
+          {
+            "value": "all",
+            "label": "Show All"
+          },
+          {
+            "value": "likecomment",
+            "label": "Show Like & Comment"
+          },
+          {
+            "value": "like",
+            "label": "Show One Like"
+          },
+          {
+            "value": "comment",
+            "label": "Show One comment"
+          },
+          {
+            "value": "des",
+            "label": "Show Description"
+          }
+        ]
+      }
+      ],
+    	"presets": [
+          {
+          "name": "Instagram Photo",
+          "category": "Image"
+          }
+      ]
+  }
+{% endschema %}

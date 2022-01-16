@@ -1,0 +1,1305 @@
+<style>
+  .product-template__content{
+    background-color: {{section.settings.bg_product}};
+  }
+</style>
+<section id="columns" class="columns-container productlists-wrapper">
+<div class="product-template__container" itemscope itemtype="http://schema.org/Product" id="ProductSection-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="product" data-enable-history-state="true">
+  <meta itemprop="name" content="{{ product.title }}">
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+  <meta itemprop="image" content="{{ product.featured_image.src | img_url: '800x' }}">
+ {% assign current_pro = product.id %}
+  {% comment %}
+    Get first variant, or deep linked one
+  {% endcomment %}
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  {%- assign product_thumb_size = '160x160' -%}
+  {%- assign product_image_zoom_size = '1024x1024' -%}
+  {%- assign enable_zoom = section.settings.enable_zoom -%}
+
+  {%- assign column_center = 'col-xs-12 col-sm-8 col-md-9' -%}
+  {%- assign column_left_product = 'col-xs-12 col-sm-12 col-md-5' -%}
+  {%- assign column_center_product = 'col-xs-12 col-sm-12 col-md-7' -%}
+  {%- assign column_right_product = 'col-xs-12 col-sm-12 col-md-7' -%}
+
+  {%- assign product_image_size = '1024x' -%}
+  {%- assign product_description_width = 'col-xs-12 col-md-6' -%}
+  {%- assign product_image_width = 'col-xs-12 col-md-6' -%}
+  {% case section.settings.image_size %}
+    {% when 'small' %}
+      {%- assign product_image_width = 'col-xs-12 col-md-5' -%}
+      {%- assign product_description_width = 'col-xs-12 col-md-7' -%}      
+    {% when 'medium' %}
+      {%- assign product_image_width = 'col-xs-12 col-md-6' -%}
+      {%- assign product_description_width = 'col-xs-12 col-md-6' -%}
+    {% when 'large' %}
+      {%- assign product_image_width = 'col-xs-12 col-md-7' -%}
+      {%- assign product_description_width = 'col-xs-12 col-md-5' -%}
+  {% endcase %}
+  <div id="center_column" class="center_column">
+    <div class="product-template__content">
+      <div class="{{section.settings.set_layoutproduct}}">
+      <div class="row product-single product-trend" >
+        <div class="product-single__photos {{ product_image_width }} thumb_trend">
+          {%- assign featured_img_src = current_variant.featured_image.src | default: product.featured_image.src -%}
+          {%- assign featured_img_alt = current_variant.featured_image.alt | default: product.featured_image.alt -%}
+          <div class="block-slide_img">
+            <div class="block__lager">
+              <div class="slider-for my-gallery clearfix" itemscope itemtype="http://schema.org/ImageGallery">
+                {% for image in product.images %}
+                  <figure id="image{{ forloop.index }}" class="img" data-scroll-offset="70" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject" ><a class="photoswipe zoom_enabled zoom_image zoom" rel="image_thumb" data-size="800x1000" href="{% if section.settings.enable_popup %}{{ image.src | img_url: product_image_size }} {% else %} # {% endif %}"><img class="lazyload" src="{{ image.src | img_url: product_image_size }}" alt="{{ image.alt | escape }}" >
+                   </a></figure>
+                {% endfor %}
+              </div>
+              {% if product.description contains '[/video]' %}  
+                {% assign video  = product.description | split: '[video]' | last %}
+                <a class="fancybox-media" href="{{ video  | split: '[/video]' | first }}"><span class="product-video"><svg class="icon icon-play-video" aria-hidden="true" focusable="false" role="presentation"  version="1.0" viewBox="0 0 490 490" ><path d="M15.541,490V0l458.917,245.009L15.541,490z"/></svg></span></a>  
+              {% endif %} 
+              {%- assign on_sale = false -%}
+              {%- if product.compare_at_price > product.price -%}
+              {%- assign on_sale = true -%}
+              {%- endif -%}
+              {% if on_sale %}
+                  <span class="sale-box">
+                    <span class="label-sale label">-{{ product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price }}%</span>
+                  </span>
+                  {% endif %}
+                </div>
+          </div>
+          <div class="slider-nav">
+            {% for image in product.images %}
+            <div class="img">
+              <a class="product-single__thumbnail product-single__thumbnail--{{ section.id }} scrollto" href="#" data-attr-scroll="image{{forloop.index}}" data-image="{{ image.src | img_url: product_image_size }}" data-zoom-image="{{ image.src | img_url: 'master' }}" data-imgvarian="{{ image.src }} | img_url" >
+                <img class="img-responsive lazyload" src="{{ image.src | img_url: product_thumb_size }}" alt="{{ image.alt | escape }}">
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- Root element of PhotoSwipe. Must have class pswp. -->
+          <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+              <!-- Background of PhotoSwipe. 
+                   It's a separate element, as animating opacity is faster than rgba(). -->
+              <div class="pswp__bg"></div>
+
+              <!-- Slides wrapper with overflow:hidden. -->
+              <div class="pswp__scroll-wrap">
+
+                  <!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+                  <!-- don't modify these 3 pswp__item elements, data is added later on. -->
+                  <div class="pswp__container">
+                      <div class="pswp__item"></div>
+                      <div class="pswp__item"></div>
+                      <div class="pswp__item"></div>
+                  </div>
+
+                  <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+                  <div class="pswp__ui pswp__ui--hidden">
+
+                      <div class="pswp__top-bar">
+
+                          <!--  Controls are self-explanatory. Order can be changed. -->
+
+                          <div class="pswp__counter"></div>
+
+                          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                          <!-- Preloader demo https://codepen.io/dimsemenov/pen/yyBWoR -->
+                          <!-- element will get class pswp__preloader--active when preloader is running -->
+                          <div class="pswp__preloader">
+                              <div class="pswp__preloader__icn">
+                                <div class="pswp__preloader__cut">
+                                  <div class="pswp__preloader__donut"></div>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                          <div class="pswp__share-tooltip"></div> 
+                      </div>
+
+                      <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+                      </button>
+
+                      <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+                      </button>
+
+                      <div class="pswp__caption">
+                          <div class="pswp__caption__center"></div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+          </div>
+          <script>
+            $(document).ready(function() {
+              $('.slider-nav').slick({
+                slidesToShow: 4,
+                slidesToScroll: 1,
+                infinite: false,
+                dots: false,
+                focusOnSelect: true,
+                vertical: true,
+                verticalSwiping: true,
+                responsive: [
+                  {
+                     breakpoint: 1200,
+                     settings: {
+                       vertical: false,
+                      verticalSwiping: false,
+                      asNavFor: '.slider-for',
+                      arrows: false,
+                     }
+                  }
+                ]
+              });
+              {% if section.settings.enable_popup %}
+              var initPhotoSwipeFromDOM = function(gallerySelector) {
+                // parse slide data (url, title, size ...) from DOM elements 
+                // (children of gallerySelector)
+                var parseThumbnailElements = function(el) {
+                    var thumbElements = el.childNodes,
+                        numNodes = thumbElements.length,
+                        items = [],
+                        figureEl,
+                        linkEl,
+                        size,
+                        item;
+
+                    for(var i = 0; i < numNodes; i++) {
+
+                        figureEl = thumbElements[i]; // <figure> element
+
+                        // include only element nodes 
+                        if(figureEl.nodeType !== 1) {
+                            continue;
+                        }
+
+                        linkEl = figureEl.children[0]; // <a> element
+
+                        size = linkEl.getAttribute('data-size').split('x');
+
+                        // create slide object
+                        item = {
+                            src: linkEl.getAttribute('href'),
+                            w: parseInt(size[0], 10),
+                            h: parseInt(size[1], 10)
+                        };
+
+
+
+                        if(figureEl.children.length > 1) {
+                            // <figcaption> content
+                            item.title = figureEl.children[1].innerHTML; 
+                        }
+
+                        if(linkEl.children.length > 0) {
+                            // <img> thumbnail element, retrieving thumbnail url
+                            item.msrc = linkEl.children[0].getAttribute('src');
+                        } 
+
+                        item.el = figureEl; // save link to element for getThumbBoundsFn
+                        items.push(item);
+                    }
+
+                    return items;
+                };
+
+                // find nearest parent element
+                var closest = function closest(el, fn) {
+                    return el && ( fn(el) ? el : closest(el.parentNode, fn) );
+                };
+
+                // triggers when user clicks on thumbnail
+                var onThumbnailsClick = function(e) {
+                    e = e || window.event;
+                    e.preventDefault ? e.preventDefault() : e.returnValue = false;
+
+                    var eTarget = e.target || e.srcElement;
+
+                    // find root element of slide
+                    var clickedListItem = closest(eTarget, function(el) {
+                        return (el.tagName && el.tagName.toUpperCase() === 'FIGURE');
+                    });
+
+                    if(!clickedListItem) {
+                        return;
+                    }
+
+                    // find index of clicked item by looping through all child nodes
+                    // alternatively, you may define index via data- attribute
+                    var clickedGallery = clickedListItem.parentNode,
+                        childNodes = clickedListItem.parentNode.childNodes,
+                        numChildNodes = childNodes.length,
+                        nodeIndex = 0,
+                        index;
+
+                    for (var i = 0; i < numChildNodes; i++) {
+                        if(childNodes[i].nodeType !== 1) { 
+                            continue; 
+                        }
+
+                        if(childNodes[i] === clickedListItem) {
+                            index = nodeIndex;
+                            break;
+                        }
+                        nodeIndex++;
+                    }
+
+
+
+                    if(index >= 0) {
+                        // open PhotoSwipe if valid index found
+                        openPhotoSwipe( index, clickedGallery );
+                    }
+                    return false;
+                };
+
+                // parse picture index and gallery index from URL (#&pid=1&gid=2)
+                var photoswipeParseHash = function() {
+                    var hash = window.location.hash.substring(1),
+                    params = {};
+
+                    if(hash.length < 5) {
+                        return params;
+                    }
+
+                    var vars = hash.split('&');
+                    for (var i = 0; i < vars.length; i++) {
+                        if(!vars[i]) {
+                            continue;
+                        }
+                        var pair = vars[i].split('=');  
+                        if(pair.length < 2) {
+                            continue;
+                        }           
+                        params[pair[0]] = pair[1];
+                    }
+
+                    if(params.gid) {
+                        params.gid = parseInt(params.gid, 10);
+                    }
+
+                    return params;
+                };
+
+                var openPhotoSwipe = function(index, galleryElement, disableAnimation, fromURL) {
+                    var pswpElement = document.querySelectorAll('.pswp')[0],
+                        gallery,
+                        options,
+                        items;
+
+                    items = parseThumbnailElements(galleryElement);
+
+                    // define options (if needed)
+                    options = {
+                      maxSpreadZoom: 0,
+                      bgOpacity: 0.9,
+                      zoomEl: true,
+                      history:false,
+                      
+                        // define gallery index (for URL)
+                        galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+                        getThumbBoundsFn: function(index) {
+                            // See Options -> getThumbBoundsFn section of documentation for more info
+                            var thumbnail = items[index].el.getElementsByTagName('img')[0], // find thumbnail
+                                pageYScroll = window.pageYOffset || document.documentElement.scrollTop,
+                                rect = thumbnail.getBoundingClientRect(); 
+
+                            return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+                        }
+
+                    };
+
+                    // PhotoSwipe opened from URL
+                    if(fromURL) {
+                        if(options.galleryPIDs) {
+                            // parse real index when custom PIDs are used 
+                            // http://photoswipe.com/documentation/faq.html#custom-pid-in-url
+                            for(var j = 0; j < items.length; j++) {
+                                if(items[j].pid == index) {
+                                    options.index = j;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // in URL indexes start from 1
+                            options.index = parseInt(index, 10) - 1;
+                        }
+                    } else {
+                        options.index = parseInt(index, 10);
+                    }
+
+                    // exit if index not found
+                    if( isNaN(options.index) ) {
+                        return;
+                    }
+
+                    if(disableAnimation) {
+                        options.showAnimationDuration = 0;
+                    }
+
+                    // Pass data to PhotoSwipe and initialize it
+                    gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+                    gallery.init();
+                    var psIndex = gallery.getCurrentIndex();
+                    var psIndexSlick = psIndex;
+                     //console.log(psIndexSlick);
+                     gallery.listen('afterChange', function() { 
+                      var psIndex = gallery.getCurrentIndex();
+                      var psIndexSlick = psIndex;
+                      // console.log(psIndexSlick);
+                      $(".slider-nav").slick( "slickGoTo", psIndexSlick); 
+                    });
+                     gallery.listen('close', function() {
+                      var psIndex = gallery.getCurrentIndex();
+                        var psIndexSlick = psIndex;
+                        // console.log(psIndexSlick);
+                        $(".slider-nav").slick( "slickGoTo", psIndexSlick); 
+                    });
+                };
+
+                // loop through all gallery elements and bind events
+                var galleryElements = document.querySelectorAll( gallerySelector );
+
+                for(var i = 0, l = galleryElements.length; i < l; i++) {
+                    galleryElements[i].setAttribute('data-pswp-uid', i+1);
+                    galleryElements[i].onclick = onThumbnailsClick;
+                }
+
+                // Parse URL and open gallery if it contains #&pid=3&gid=1
+                var hashData = photoswipeParseHash();
+                if(hashData.pid && hashData.gid) {
+                    openPhotoSwipe( hashData.pid ,  galleryElements[ hashData.gid - 1 ], true, true );
+                }
+            };
+            // execute above function
+            initPhotoSwipeFromDOM('.my-gallery');
+            {% endif %}
+              
+              fix_responsiveproduct();
+              {% if section.settings.enable_zoom %}
+                zoom_mobile();
+                $(window).on('resize', function(){
+                  zoom_mobile();
+                });
+              {% endif %}
+
+              $(window).on('resize', function(){
+                fix_responsiveproduct();
+              });
+            });
+            
+            // fucntion fixed products
+            function fix_product(status){
+              if(status == 'enable'){
+                $(".sticky-product").stick_in_parent();
+                $(".slider-nav").stick_in_parent();
+              }
+            }
+            function click_scroll(status){
+               if(status === 'enable'){
+                  $(".scrollto").click(function(event) {
+                     event.preventDefault(); 
+                     var defaultAnchorOffset = 0;
+                     var anchor = $(this).attr('data-attr-scroll');    
+                     var anchorOffset = $('#'+anchor).attr('data-scroll-offset');
+                     $(".slider-nav .img:first").addClass("slick-current");
+                     $(".scrollto").parent('.img').removeClass("slick-current");
+                     $(this).parent('.img').addClass('slick-current');
+                     if (!anchorOffset)
+                       anchorOffset = defaultAnchorOffset; 
+                     $('html,body').animate({ 
+                       scrollTop: $('#'+anchor).offset().top - anchorOffset
+                     },300);        
+                 });
+               }
+            }
+            // function slick formobile
+            function slick_mobile(status){
+               if(status === 'enable'){
+                  $('.slider-for').slick({
+                     arrows: true,
+                     fade: true,
+                     responsive: [
+                        {
+                           breakpoint: 9999,
+                           settings: "unslick"
+                        },
+                        {
+                           breakpoint: 1200,
+                           settings: {
+                              slidesToShow: 1,
+                              slidesToScroll: 1,
+                              asNavFor: '.slider-nav',
+                           }
+                        }
+                     ]
+                  });
+               }
+            }
+            // product responsive
+            function fix_responsiveproduct(){
+               compensante = scrollCompensate();
+               if (($(window).width()+scrollCompensate()) <= 1200)
+               {
+                  fix_product('disable');
+                  slick_mobile('enable');
+               }
+               else if (($(window).width()+scrollCompensate()) >= 1200)
+               {
+                  fix_product('enable');
+                  slick_mobile('disable');
+               }
+            }    
+            // remove zoom mobile
+            
+               function zoom_mobile(){
+                  compensante = scrollCompensate();
+                  if (($(window).width()+scrollCompensate()) <= 1200)
+                     {
+                        {% if section.settings.enable_zoom %}
+                        $('.zoom_image').trigger('zoom.destroy');
+                        {% endif %}
+                        click_scroll('disable');
+                     }
+                  else if (($(window).width()+scrollCompensate()) >= 1200)
+                     {
+                        {% if section.settings.enable_zoom %}
+                           $('.zoom_image').zoom();
+                        {% endif %}
+                        click_scroll('enable');
+                  }
+               }
+            
+            //function scroll
+           </script>
+        </div>
+        <div class="{{ product_description_width }} sticky-product product-right-column" data-sticky_column>
+          <div class="product-single__meta product-scroll">
+            
+            <h1 itemprop="name" class="product-single__title">{{ product.title }}</h1>
+             
+            <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+              <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+        
+              <link itemprop="availability" href="http://schema.org/{% if product.available %}InStock{% else %}OutOfStock{% endif %}">
+
+              <p class="product-single__price{% unless product.available %} product-price--sold-out{% endunless %}">              
+                <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+                <s id="ComparePrice-{{ section.id }}">{{ product.compare_at_price | money }}</s>
+                <span class="product-price-te__price product-price__price-{{ section.id }} product-price__sale product-price__sale--single">
+                  <span itemprop="price" id="ProductPrice-{{ section.id }}">{{ product.price | money }}</span>
+                </span>
+                <span class="availability {% if section.settings.product_page_availability == false %}hidden{% endif %}">
+                        {% if product.available %}                                
+                            <span class="available instock">{{'products.product.available' | t }}</span>
+                        {% else %}
+                            <span class="available outstock">{{'products.product.unavailable' | t }}</span>
+                        {% endif %}
+                    </span>
+              </p>
+              {% if settings.apollo_count_down_enable and settings.apollo_count_down_prodetails %}
+              {% assign dealTime = settings.home_productdeal_time | split: ' ' | join: ' ' | split: ' ' %}
+              
+              {% include 'block-productdeal' %}
+              {% endif %} 
+              {% if settings.show_reviews_detail %}
+              <div class="review">
+                <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+              </div>
+              {% endif %}
+              {% if product.description contains '[/shortdesc]' %}  
+              {% assign shortdesc = product.description | split: '[shortdesc]' | last %}
+                <p class="description">
+                  {{ shortdesc | split: '[/shortdesc]' | first }}
+                </p>
+              {% endif %}
+              <form action="/cart/add" method="post" enctype="multipart/form-data" id="AddToCartForm" class="AddToCartForm-id form-ajaxtocart clearfix">
+                <div class="proVariants clearfix">
+                  <select name="id" id="productSelect" class="product-single__variants">
+                    {% for variant in product.variants %}
+                    {% if variant.available %}
+                    <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">{{ variant.title }}</option>
+                    {% else %}
+                    <option disabled="disabled">
+                      {{ variant.title }} - {{ 'products.product.sold_out' | t }}
+                    </option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if section.settings.product_page_swatch %}
+                  {% for option in product.options %}                
+                  {% include 'swatch' with option %}              
+                  {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="cart_qty">
+                <div class="quantity_wanted_p">
+                  <label for="Quantity-{{ product.id }}" class="quantity-selector">{{ 'products.product.quantity' | t }}</label>
+                  <input type="number" id="Quantity-{{ product.id }}" name="quantity" value="1" min="1" class="quantity-selector">
+                </div>
+                <button type="submit" name="add" id="AddToCart" class="AddToCart-id btn add_to_cart_detail ajax_addtocart" title="{{ 'products.product.add_to_cart' | t }}">
+                  <i class="fa fa-shopping-cart"></i>
+                  <span id="AddToCartText">{{ 'products.product.add_to_cart' | t }}</span>
+                </button>
+                </div>
+              </form>
+              {% comment %} Bỏ wishlist ra ngoài form AddToCart để có thể hoạt động {% endcomment %}
+              {%- if settings.theme_wishlist_enable -%}
+                 {% if settings.wishlist_nologin %}
+                    {% include 'wishlist-button'%}
+                 {% else %}
+                   <div class="add-wishlist">
+                     {% include 'wishlist-product' %}
+                   </div>
+                 {% endif %}
+              {%- endif -%}
+            </div>
+              {% if section.settings.show_share_buttons %}
+              {% include 'social-sharing', share_title: product.title, share_permalink: product.url, share_image: product %}
+            {% endif %}
+            {% comment %} show properties {% endcomment %}
+            {% if section.settings.enable_pro %}
+            <ul class="list-inline list-prope">
+               {%- if section.settings.show_sku -%}
+               <li>
+                  {%- assign current_variant = product.selected_or_first_available_variant -%}
+                  {{ 'products.product.sku' | t }}:  <span class="variant-sku"> {{ current_variant.sku }}</span>
+               </li>
+               {%- endif -%}
+               {%- if section.settings.show_vendor -%}
+               <li>
+                  {{ 'products.product.vendor' | t }} : <span class="product-single__vendor"> {{ product.vendor | link_to: vendor_url }}</span>
+               </li>
+               {%- endif -%}
+               {%- if section.settings.show_type -%}
+               <li>
+                  {{ 'products.product.type' | t }} : <span class="product-single__type"> {{ product.type }}</span>
+               </li>
+               {%- endif -%}
+               {%- if section.settings.show_col -%}
+               <li>{{ 'products.product.collection' | t }}: 
+                  {% for collection in product.collections %}
+                     <a href="{{ collection.url }}">{{ collection.title }}</a>{% unless forloop.last %}, {% endunless %}
+                  {% endfor %}
+               </li>
+               {%- endif -%}
+               {%- if section.settings.show_tag -%}
+               <li>{{ 'products.product.tag' | t }}: &nbsp;
+                  {%- for tag in product.tags limit:section.settings.limit_tag -%}
+                     <a href="/collections/all?constraint={{ tag | handle }}"> {{tag}} </a>{% unless forloop.last %}, {% endunless %}
+                  {%- endfor -%}
+               </li>
+               {%- endif -%}
+            </ul>
+            {% endif %}
+            {% comment %} tab {% endcomment %}
+            {% if section.settings.enable_accodi %}
+              <div class="more_info_block">
+                  {% assign fulldesc = product.description | split: '[/shortdesc]' | last %}  
+                      {% assign fulldesc = fulldesc | split: '[tab]' %} 
+                      <div class="nav nav-tabs tab-info page-product-heading">    
+                        {% if fulldesc[0] contains '[/tab]' %} 
+                          {% assign counttab = 0 %} 
+                        {% else %}
+                          {% assign counttab = -1 %}
+                        {% endif %}
+                        {% if product.description contains '[tab]' %}
+                          {% for desc in fulldesc %}
+                            {% assign counttab = counttab | plus: 1 %}
+                            {% if counttab == 1 %}
+                              <div class="page-product-box">
+                              <div class="panel panel-default">
+                                <h3 class="page-subheading">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" >
+                                    {{ section.settings.product_moreinfo_tab1title }}
+                                  </a>
+                                </h3>
+                                <div id="collapse1" class="panel-collapse collapse in">
+                                  <div class="panel-body">
+                                    <div class="rte">
+                                      {{ desc | split: '[/tab]' | first }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                            {% if counttab == 2 %}
+                              <div class="page-product-box">
+                              <div class="panel panel-default">
+                                <h3 class="page-subheading">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" class="collapsed">
+                                    {{ section.settings.product_moreinfo_tab2title }}
+                                  </a>
+                                </h3>
+                                <div id="collapse2" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                    <div class="rte">
+                                      {{ desc | split: '[/tab]' | first }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                            {% if counttab == 3 %}
+                              <section class="page-product-box">
+                              <div class="panel panel-default">
+                                <h3 class="page-subheading">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" class="collapsed">
+                                    {{ section.settings.product_moreinfo_tab2title }}
+                                  </a>
+                                </h3>
+                                <div id="collapse3" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                    <div class="rte">
+                                      {{ desc | split: '[/tab]' | first }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </section>
+                            {% endif %}
+                            {% if counttab == 4 %}
+                              <div class="page-product-box">
+                              <div class="panel panel-default">
+                                <h3 class="page-subheading">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" class="collapsed">
+                                    {{ section.settings.product_moreinfo_tab2title }}
+                                  </a>
+                                </h3>
+                                <div id="collapse4" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                    <div class="rte">
+                                      {{ desc | split: '[/tab]' | first }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                            {% if counttab == 5 %}
+                              <div class="page-product-box">
+                              <div class="panel panel-default">
+                                <h3 class="page-subheading">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" class="collapsed">
+                                    {{ section.settings.product_moreinfo_tab2title }}
+                                  </a>
+                                </h3>
+                                <div id="collapse5" class="panel-collapse collapse">
+                                  <div class="panel-body">
+                                    <div class="rte">
+                                      {{ desc | split: '[/tab]' | first }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                          {% endfor %}
+                        {% else %}
+                          <div class="page-product-box">
+                          <div class="panel panel-default">
+                            <h3 class="page-subheading">
+                              <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" >
+                                {{ section.settings.product_moreinfo_tab1title }}
+                              </a>
+                            </h3>
+                            <div id="collapse1" class="panel-collapse collapse in">
+                              <div class="panel-body">
+                                <div class="rte">
+                                  {{ fulldesc }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+                        {% if section.settings.show_faqs_detail and section.settings.show_faqs_detail_tab %}
+                        <div class="page-product-box">
+                          <div class="panel panel-default">
+                            <h3 class="page-subheading">
+                              <a data-toggle="collapse" data-parent="#accordion" href="#collapse6" class="collapsed">
+                                {{ section.settings.product_moreinfo_tab_faqs_title }}
+                              </a>
+                            </h3>
+                            <div id="collapse6" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <div class="rte">
+                                  <form id="form_faq">
+                                    <h4>{{ 'products.product.title_faq' | t }}</h4><br>
+                                    <div class="form-group">
+                                      <input type="text" class="form-control" placeholder="Name" name="faq-name" id="faq_name" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                      <input type="text" class="form-control" placeholder="Email" name="faq-email" id="faq_email" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                      <input type="text" class="form-control" placeholder="Subject Line" name="faq-subject-line" id="faq_title" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                      <textarea class="form-control" rows="5" placeholder="Ask your question here" name="quote-question" id="faq_question" required="required"></textarea>
+                                    </div>
+                                    <button type="submit" id="btn_send_question" class="btn btn-primary" data-title="{{ product.title }}" data-href="{{ product.url }}">{{ 'products.product.submit_faq' | t }}</button>
+                                  </form>
+                                  <div id="list_err_question"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+                        {% if settings.show_reviews_detail and section.settings.show_reviews_detail_tab %}
+                        <div class="page-product-box">
+                          <div class="panel panel-default">
+                            <h3 class="page-subheading">
+                              <a data-toggle="collapse" data-parent="#accordion" href="#collapse7" class="collapsed">
+                                {{ section.settings.product_moreinfo_tab_reviews_title }}
+                              </a>
+                            </h3>
+                            <div id="collapse7" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <div class="rte">
+                                  <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+
+                        {% if section.settings.show_comment_detail and section.settings.show_comment_detail_tab %}
+                        <div class="page-product-box">
+                          <div class="panel panel-default">
+                            <h3 class="page-subheading">
+                              <a data-toggle="collapse" data-parent="#accordion" href="#collapse8" class="collapsed">
+                                {{ section.settings.product_moreinfo_tab_comment_title }}
+                              </a>
+                            </h3>
+                            <div id="collapse8" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                <div class="rte">
+                                  <div class="fb-comments" data-href="{{ shop.url | append: share_permalink }}{{ product.url }}" data-numposts="{{ section.settings.facebook_comment_display }}"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %}
+                      </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  <div class="{{section.settings.set_layout_more}}">
+  {% unless section.settings.enable_accodi  %}
+  <div class="more_info_block ">
+      {% assign fulldesc = product.description | split: '[/shortdesc]' | last %}
+      
+      {% if section.settings.product_description_type == 'tab'  %}
+          <ul class="nav nav-tabs tab-info page-product-heading">    
+          {% if product.description contains '[/shortdesc]' %} 
+              {% assign counttab = -1 %} 
+          {% else %}
+              {% assign counttab = 0 %}
+          {% endif %}
+          {% if product.description contains '[tab]' %}
+              {% assign fulldesc = fulldesc | split: '[tab]' %}
+              {% for desc in fulldesc %}
+                {% assign counttab = counttab | plus: 1 %}
+                {% if counttab == 1 %}
+                  <li>
+                    <a href="#idTab1" data-toggle="tab">{{ section.settings.product_moreinfo_tab1title }}</a>
+                  </li>
+                {% endif %}
+                {% if counttab == 2 %}
+                  <li>
+                    <a href="#idTab2" data-toggle="tab">{{ section.settings.product_moreinfo_tab2title }}</a>
+                  </li>
+                {% endif %}
+                {% if counttab == 3 %}
+                  <li>
+                    <a href="#idTab3" data-toggle="tab">{{ section.settings.product_moreinfo_tab3title }}</a>
+                  </li>
+                {% endif %}
+                {% if counttab == 4 %}
+                  <li>
+                    <a href="#idTab4" data-toggle="tab">{{ section.settings.product_moreinfo_tab4title }}</a>
+                  </li>
+                {% endif %}
+                {% if counttab == 5 %}
+                  <li>
+                    <a href="#idTab5" data-toggle="tab">{{ section.settings.product_moreinfo_tab5title }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}          
+          {% else %}
+              <li>
+                <a href="#idTab1" data-toggle="tab">{{ section.settings.product_moreinfo_tab1title }}</a>
+              </li>
+      {% endif %}
+              
+          {% if section.settings.show_faqs_detail and section.settings.show_faqs_detail_tab %}
+              <li>
+                <a href="#idTab6" data-toggle="tab">{{ section.settings.product_moreinfo_tab_faqs_title }}</a>
+              </li>
+            {% endif %}
+
+          {% if settings.show_reviews_detail and section.settings.show_reviews_detail_tab %}
+              <li>
+                <a href="#idTab7" data-toggle="tab">
+                  <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+                </a>
+              </li>
+          {% endif %}
+
+          {% if section.settings.show_comment_detail and section.settings.show_comment_detail_tab %}
+              <li>
+                <a href="#idTab8" data-toggle="tab">{{ section.settings.product_moreinfo_tab_comment_title }}</a>
+              </li>
+          {% endif %}
+          </ul>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="tab-content">
+                  {% if fulldesc[0] contains '[/tab]' %} 
+                      {% assign counttab = 0 %} 
+                  {% else %}
+                      {% assign counttab = -1 %}
+                  {% endif %}
+                  {% if product.description contains '[tab]' %}
+
+                    {% for desc in fulldesc %}
+                      {% assign counttab = counttab | plus: 1 %}
+                      {% if counttab == 1 %}
+                        <div id="idTab1" class="tab-pane page-product-box">
+                          <div class="rte">
+                            {% assign desc1 =  desc | split: '[/tab]' | first %}
+                            {% include 'shortcode' load: desc1 %}
+                          </div>
+                        </div>
+                      {% endif %}
+                      {% if counttab == 2 %}
+                        <div id="idTab2" class="tab-pane page-product-box">
+                          <div class="rte">
+                            {{ desc | split: '[/tab]' | first }}
+                          </div>
+                        </div>
+                      {% endif %}
+                      {% if counttab == 3 %}
+                        <div id="idTab3" class="tab-pane page-product-box">
+                          <div class="rte">
+                            {{ desc | split: '[/tab]' | first }}
+                          </div>
+                        </div>
+                      {% endif %}
+                      {% if counttab == 4 %}
+                        <div id="idTab4" class="tab-pane page-product-box">
+                          <div class="rte">
+                            {{ desc | split: '[/tab]' | first }}
+                          </div>
+                        </div>
+                      {% endif %}
+                      {% if counttab == 5 %}
+                        <div id="idTab5" class="tab-pane page-product-box">
+                          <div class="rte">
+                            {{ desc | split: '[/tab]' | first }}
+                          </div>
+                        </div>
+                      {% endif %}
+
+                    {% endfor %}
+                  
+                  {% else %}
+                  <div id="idTab1" class="tab-pane page-product-box">
+                    <div class="rte">                  
+                      {% include 'shortcode' load: fulldesc %}                  
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  {% if section.settings.show_faqs_detail and section.settings.show_faqs_detail_tab %}
+                  <div id="idTab6" class="tab-pane page-product-box">
+                    <div class="row">
+                      <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+                        <form id="form_faq">
+                          <h4>{{'products.product.title_faq' | t}}</h4><br>
+                          <div class="form-group">
+                            <input type="text" class="form-control" placeholder="{{'contact.form.name' | t}}" name="faq-name" id="faq_name" required="required">
+                          </div>
+                          <div class="form-group">
+                            <input type="text" class="form-control" placeholder="{{'contact.form.email' | t}}" name="faq-email" id="faq_email" required="required">
+                          </div>
+                          <div class="form-group">
+                            <input type="text" class="form-control" placeholder="{{'contact.form.subject' | t}}" name="faq-subject-line" id="faq_title" required="required">
+                          </div>
+                          <div class="form-group">
+                            <textarea class="form-control" rows="5" placeholder="{{'contact.form.faq' | t}}" name="quote-question" id="faq_question" required="required"></textarea>
+                          </div>
+                          <button type="submit" id="btn_send_question" class="btn btn-primary" data-title="{{ product.title }}" data-href="{{ product.url }}">{{'products.product.submit_faq' | t}}</button>
+                        </form>
+                        <div id="list_err_question"></div>
+                      </div>
+                    </div>
+                    <div id="list_err_question"></div>
+                  </div>
+                  {% endif %}
+
+                  {% if settings.show_reviews_detail and section.settings.show_reviews_detail_tab %}
+                  <div id="idTab7" class="tab-pane page-product-box">
+                    <div class="row">
+                      <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+                        <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+
+                  {% if section.settings.show_comment_detail and section.settings.show_comment_detail_tab %}
+                  <div id="idTab8" class="tab-pane page-product-box">
+                    <div class="row">
+                      <div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12">
+                      <div class="fb-comments" data-href="{{ shop.url | append: share_permalink }}{{ product.url }}" data-numposts="{{ section.settings.facebook_comment_display }}"></div>
+                    </div>
+                  </div>
+                  {% endif %}
+              </div>
+            </div>
+            
+        </div>
+      {% else %}
+          {% assign fulldesc = fulldesc | split: '[tab]' %} 
+          <div class="nav nav-tabs tab-info page-product-heading">    
+            {% if fulldesc[0] contains '[/tab]' %} 
+              {% assign counttab = 0 %} 
+            {% else %}
+              {% assign counttab = -1 %}
+            {% endif %}
+            {% if product.description contains '[tab]' %}
+              {% for desc in fulldesc %}
+                {% assign counttab = counttab | plus: 1 %}
+                {% if counttab == 1 %}
+                  <div class="page-product-box">
+                  <div class="panel panel-default">
+                    <h3 class="page-subheading">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" >
+                        {{ section.settings.product_moreinfo_tab1title }}
+                      </a>
+                    </h3>
+                    <div id="collapse1" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        <div class="rte">
+                          {{ desc | split: '[/tab]' | first }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                {% if counttab == 2 %}
+                  <div class="page-product-box">
+                  <div class="panel panel-default">
+                    <h3 class="page-subheading">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse2" class="collapsed">
+                        {{ section.settings.product_moreinfo_tab2title }}
+                      </a>
+                    </h3>
+                    <div id="collapse2" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <div class="rte">
+                          {{ desc | split: '[/tab]' | first }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                {% if counttab == 3 %}
+                  <section class="page-product-box">
+                  <div class="panel panel-default">
+                    <h3 class="page-subheading">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse3" class="collapsed">
+                        {{ section.settings.product_moreinfo_tab2title }}
+                      </a>
+                    </h3>
+                    <div id="collapse3" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <div class="rte">
+                          {{ desc | split: '[/tab]' | first }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                {% endif %}
+                {% if counttab == 4 %}
+                  <div class="page-product-box">
+                  <div class="panel panel-default">
+                    <h3 class="page-subheading">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse4" class="collapsed">
+                        {{ section.settings.product_moreinfo_tab2title }}
+                      </a>
+                    </h3>
+                    <div id="collapse4" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <div class="rte">
+                          {{ desc | split: '[/tab]' | first }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+                {% if counttab == 5 %}
+                  <div class="page-product-box">
+                  <div class="panel panel-default">
+                    <h3 class="page-subheading">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapse5" class="collapsed">
+                        {{ section.settings.product_moreinfo_tab2title }}
+                      </a>
+                    </h3>
+                    <div id="collapse5" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <div class="rte">
+                          {{ desc | split: '[/tab]' | first }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <div class="page-product-box">
+              <div class="panel panel-default">
+                <h3 class="page-subheading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" >
+                    {{ section.settings.product_moreinfo_tab1title }}
+                  </a>
+                </h3>
+                <div id="collapse1" class="panel-collapse collapse in">
+                  <div class="panel-body">
+                    <div class="rte">
+                      {{ fulldesc }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% if section.settings.show_faqs_detail and section.settings.show_faqs_detail_tab %}
+            <div class="page-product-box">
+              <div class="panel panel-default">
+                <h3 class="page-subheading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse6" class="collapsed">
+                    {{ section.settings.product_moreinfo_tab_faqs_title }}
+                  </a>
+                </h3>
+                <div id="collapse6" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <div class="rte">
+                      <form id="form_faq">
+                        <h4>{{ 'products.product.title_faq' | t }}</h4><br>
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Name" name="faq-name" id="faq_name" required="required">
+                        </div>
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Email" name="faq-email" id="faq_email" required="required">
+                        </div>
+                        <div class="form-group">
+                          <input type="text" class="form-control" placeholder="Subject Line" name="faq-subject-line" id="faq_title" required="required">
+                        </div>
+                        <div class="form-group">
+                          <textarea class="form-control" rows="5" placeholder="Ask your question here" name="quote-question" id="faq_question" required="required"></textarea>
+                        </div>
+                        <button type="submit" id="btn_send_question" class="btn btn-primary" data-title="{{ product.title }}" data-href="{{ product.url }}">{{ 'products.product.submit_faq' | t }}</button>
+                      </form>
+                      <div id="list_err_question"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+
+            {% if settings.show_reviews_detail and section.settings.show_reviews_detail_tab %}
+            <div class="page-product-box">
+              <div class="panel panel-default">
+                <h3 class="page-subheading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse7" class="collapsed">
+                    {{ section.settings.product_moreinfo_tab_reviews_title }}
+                  </a>
+                </h3>
+                <div id="collapse7" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <div class="rte">
+                      <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            {% if section.settings.show_comment_detail and section.settings.show_comment_detail_tab %}
+            <div class="page-product-box">
+              <div class="panel panel-default">
+                <h3 class="page-subheading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse8" class="collapsed">
+                    {{ section.settings.product_moreinfo_tab_comment_title }}
+                  </a>
+                </h3>
+                <div id="collapse8" class="panel-collapse collapse">
+                  <div class="panel-body">
+                    <div class="rte">
+                      <div class="fb-comments" data-href="{{ shop.url | append: share_permalink }}{{ product.url }}" data-numposts="{{ section.settings.facebook_comment_display }}"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+      {% endif %}
+      
+      {% if section.settings.show_faqs_detail and section.settings.show_faqs_detail_tab == false %}
+          <div class="faqs_detail">
+              <h3 class="page-subheading">
+                {{ section.settings.product_moreinfo_tab_faqs_title }}
+              </h3>
+
+            <div>
+              <form id="form_faq">
+                <h4>{{'contact.form.faq_title' | t}}</h4><br>
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="{{'contact.form.name' | t}}" name="faq-name" id="faq_name" required="required">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="{{'contact.form.email' | t}}" name="faq-email" id="faq_email" required="required">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="{{'contact.form.subject' | t}}" name="faq-subject-line" id="faq_title" required="required">
+                </div>
+                <div class="form-group">
+                  <textarea class="form-control" rows="5" placeholder="{{'contact.form.faq' | t}}" name="quote-question" id="faq_question" required="required"></textarea>
+                </div>
+                <button type="submit" id="btn_send_question" class="btn btn-primary" data-title="{{ product.title }}" data-href="{{ product.url }}">{{'contact.form.submit' | t}}</button>
+              </form>
+              <div id="list_err_question"></div>
+            </div>
+          </div>
+      {% endif %}    
+
+      {% if settings.show_reviews_detail and section.settings.show_reviews_detail_tab == false %}
+          <div id="reviews_detail" class="">
+            <h3 class="page-subheading">
+                {{ section.settings.product_moreinfo_tab_reviews_title }}
+            </h3>
+            <div>
+              <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+            </div>
+          </div>
+      {% endif %}
+     
+      {% if section.settings.show_comment_detail and section.settings.show_comment_detail_tab == false %}
+          <div id="comment_detail" class="">
+            <div class="fb-comments" data-href="{{ shop.url | append: share_permalink }}{{ product.url }}" data-numposts="{{ section.settings.facebook_comment_display }}"></div>
+          </div>
+      {% endif %}  
+      <div class="row">
+         <div class="col-xs-12">
+               {% unless section.settings.enable_pro %}
+                  <ul class="list-inline text-center list-prope">
+                    {%- if section.settings.show_sku -%}
+                    <li>
+                      {%- assign current_variant = product.selected_or_first_available_variant -%}
+                      {{ 'products.product.sku' | t }}:  <span class="variant-sku"> {{ current_variant.sku }}</span>
+                    </li>
+                    {%- endif -%}
+                    {%- if section.settings.show_vendor -%}
+                    <li>
+                      {{ 'products.product.vendor' | t }} : <span class="product-single__vendor"> {{ product.vendor | link_to: vendor_url }}</span>
+                    </li>
+                    {%- endif -%}
+                    {%- if section.settings.show_type -%}
+                    <li>
+                      {{ 'products.product.type' | t }} : <span class="product-single__type"> {{ product.type }}</span>
+                    </li>
+                    {%- endif -%}
+                    {%- if section.settings.show_col -%}
+                    <li>{{ 'products.product.collection' | t }}: 
+                      {% for collection in product.collections %}
+                          <a href="{{ collection.url }}">{{ collection.title }}</a>{% unless forloop.last %}, {% endunless %}
+                      {% endfor %}
+                    </li>
+                    {%- endif -%}
+                    {%- if section.settings.show_tag -%}
+                    <li>{{ 'products.product.tag' | t }}:  
+                      {%- for tag in product.tags limit:section.settings.limit_tag -%}
+                            <a href="/collections/all?constraint={{ tag | handle }}"> {{ tag }} </a>{% unless forloop.last %}, {% endunless %}
+                          {%- endfor -%}
+                    </li>
+                    {%- endif -%}
+                  </ul>
+               {% endunless %}
+         </div>
+      </div>
+  {% endunless %}  
+  {%- include 'service-product'-%}
+  {%- include 'product-related'-%}
+  </div>
+{% if collection %}
+  <div class="text-center return-link-wrapper">
+    <a href="{{ collection.url }}" class="btn btn--secondary btn--has-icon-before return-link">
+      {% include 'icon-arrow-left' %}
+      {{ 'products.product.back_to_collection' | t: title: collection.title }}
+    </a>
+  </div>
+{% endif %}
+</div>
+<div class="hidden">
+  {% form 'contact' %}
+  <input type="text" id="ContactFormName" name="contact[name]" value="{% if form[name] %}{{ form[name] }}{% elsif customer %}{{ customer.name }}{% endif %}">
+  <input type="email" id="ContactFormEmail" name="contact[email]" autocorrect="off" autocapitalize="off" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" class="{% if form.errors contains 'email' %}input--error{% endif %}">
+  <input type="tel" id="ContactFormPhone" name="contact[phone]" pattern="[0-9\-]*" value="{% if form[phone] %}{{ form[phone] }}{% elsif customer %}{{ customer.phone }}{% endif %}">
+  <textarea rows="10" id="ContactFormMessage" name="contact[body]">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+  {% endform %}
+</div>
+
+{% unless product.empty? %}
+  <script type="application/json" id="ProductJson-{{ section.id }}">
+    {{ product | json }}
+  </script>
+{% endunless %}
+
+<script>
+  $(document).ready(function() {
+    $('.fancybox-media').fancybox({
+        openEffect  : 'none',
+        closeEffect : 'none',
+        width    : 900,
+            height        : 490,
+            padding:25,
+        helpers : {
+            media : {}
+        }
+    });
+});
+</script>
+</section>

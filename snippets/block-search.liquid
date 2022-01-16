@@ -1,0 +1,110 @@
+<script type="text/javascript">
+$(document).ready(function() {
+
+   $("#search_block_top").each(function() {
+      $("#search-icon").click(function() {
+         setTimeout(function() { $('#search_query_top').focus() }, 1000);
+         $(".over-layer").addClass("show"), $(".block-form").addClass("show"), $("#search-icon-close").addClass("show")
+      }), $("#search-icon-close").click(function() {
+         $(".block-form").removeClass("show"), $("#search-icon-close").removeClass("show"), $(".over-layer").removeClass("show")
+      })
+   })
+});
+$(document).mouseup(function(e) 
+{
+    var container = $(".block-form--line,.search-subget");
+
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!container.is(e.target) && container.has(e.target).length === 0) 
+    {
+        $(".block-form").removeClass("show"), $("#search-icon-close").removeClass("show"), $(".over-layer").removeClass("show");
+    }
+});
+</script>
+
+<div id="search_block_top" class="e-right">
+    <span id="search-icon" class="open-search" title="{{ 'general.search.submit' | t }}" >{% include 'icon-search' %}</span>
+  	<span id="search-icon-close" title="{{ 'general.search.submit' | t }}" >{% include 'icon-close' %}</span>
+  	<div class="over-layer"></div>
+  <div class="block-form clearfix">
+    <div class="block-form--line">
+    <form id="searchbox" class="popup-content container" action="/search" method="get">
+      <input type="hidden" name="type" value="product">
+      <input id="search_query_top" class="search_query form-control" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.placeholder' | t }}" autocomplete="off" autofocus="autofocus" />
+      <button id="search_button" class="btn btn-sm" type="submit" >
+        <span>{% include 'icon-search' %}</span>
+        {% comment %}
+        <span class="fallback-text">{{ 'general.search.submit' | t }}</span>
+        {% endcomment %}
+      </button>
+      <div id="ap-ajax-search" class="hidden-sm hidden-xs"><ul class="list-unstyled aps-results"></ul></div>
+    </form>
+    </div>
+    <div class="search-subget">
+       <div class="container">
+          <div class="row no-margin row-flex">
+            {% if settings.enable_collection_popular %}
+             <div class="col-md-4 no-padding border search-subget--box">
+              <div class="box-search">
+                {% if settings.title_popular != blank %}
+                  <h4 class="title-search">{{settings.title_popular}}</h4>
+                {% endif %}
+               <ul class="list-unstyled list-popular">
+                {% for category in collections limit:{{settings.limit_collection}} %}
+                  <li {% if collection.handle == category.handle %} class="active" {% endif %}>
+                     <a href="{{ category.url }}" title="{{ category.title }}">
+                        {{ category.title }}
+                           {% if settings.categories_block_productcount %}
+                             {% if category.all_products_count > 0 %}
+                                 <span id="apolloQty{{ category.id }}" class="apolloQty pull-right">{{ category.all_products_count }}</span>
+                             {% endif %}
+                        {% endif %}
+                     </a>
+                  </li>
+               {% endfor %}
+               </ul>
+             </div>
+             </div>
+             {% endif %}
+             {% assign img_size = '55x'%}
+             {% if settings.search_product_collection_1 != blank %}
+
+               <div class="col-md-4 no-padding border search-subget--box">
+                <div class="box-search">
+                {%- assign prosearch = collections[settings.search_product_collection_1].products -%}
+                {% if settings.title_popular_1 != blank %}
+                  <h4 class="title-search">{{settings.title_popular_1}}</h4>
+                {% endif %}
+                  <ul class="products products-block list-unstyled">
+                    {% for product in prosearch limit:3 %}
+                       <li class="media clearfix">
+                          {% include 'product-sidebar-item' with '' %}
+                       </li>
+                    {% endfor %}
+                 </ul>
+                 </div>
+               </div>
+             {% endif %}
+             {% if settings.search_product_collection_2 != blank %}
+               <div class="col-md-4 no-padding border search-subget--box">
+                  <div class="box-search">
+                {%- assign prosearch = collections[settings.search_product_collection_2].products -%}
+                {% if settings.title_popular_1 != blank %}
+                  <h4 class="title-search">{{settings.title_popular_2}}</h4>
+                {% endif %}
+                  <ul class="products products-block list-unstyled">
+                    {% for product in prosearch limit:3 %}
+                       <li class="media clearfix">
+                          {% include 'product-sidebar-item' with '' %}
+                       </li>
+                    {% endfor %}
+                 </ul>
+                  </div>
+               </div>
+             {% endif %}
+          </div>
+       </div>
+    </div>
+  </div>
+  
+</div>

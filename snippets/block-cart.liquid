@@ -1,0 +1,34 @@
+
+{%- if settings.apollo_cart_enable -%}
+  
+  <div class="mini-cart cart_mini e-right ">
+    <a href="/cart" class="site-header__cart-toggle js-drawer-open-right" aria-controls="CartDrawer" aria-expanded="false">
+      {% include 'icon-cart' %}
+      {% comment %}
+      <span class="icon icon-cart" aria-hidden="true"></span>
+      {{ 'layout.cart.title' | t }}	
+      (
+      {% endcomment %}
+      {%- if settings.apollo_cart_number_product -%}
+      <span id="CartCount">{{ cart.item_count }}</span>
+      {% comment %}
+      {{ 'layout.cart.items_count' | t: count: cart.item_count }}
+      {% endcomment %}
+      {%- endif -%} 
+      {% if settings.apollo_cart_total_price %}
+      <span class="cost">{{ 'layout.cart.price' | t }} </span><span id="CartCost">{{ cart.total_price | money }}</span>
+      {%- endif -%}
+      {% comment %}
+      )
+      {% endcomment %}
+    </a>
+    {%- if settings.apollo_cart_show_cart_hover -%}  
+    {% unless settings.apollo_cart_type == 'default' %}                        
+      {% include 'cart-quick-view' %}
+      <div id="minicard" class="mini_card">                          		
+      </div>
+    {% endunless %}
+    {%- endif -%}
+  </div>
+  
+{%- endif -%}

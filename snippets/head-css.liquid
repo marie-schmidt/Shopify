@@ -1,0 +1,49 @@
+{% if settings.type_base_family == 'google-font' %}
+  <script type="text/javascript">
+    WebFontConfig = {
+      google: { families: [ 
+        {%- if settings.type_base == settings.type_header and settings.type_base != '' -%}
+          {%- if settings.type_base != '' -%}
+            '{{ settings.type_base }}:300,400,500,600,700'
+          {%- endif -%}
+        {%- else -%}
+          {%- if settings.type_base != '' -%}
+            '{{ settings.type_base }}:300,400,500,600,700'
+          {%- endif -%}
+          {%- if settings.type_header != '' -%}
+            {%- if settings.type_base != '' -%}
+                ,
+            {%- endif -%}
+            '{{ settings.type_header }}:300,400,500,600,700'
+          {%- endif -%} 
+        {%- endif -%}
+
+        ] }
+    };
+    (function() {
+      var wf = document.createElement('script');
+      wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
+      wf.type = 'text/javascript';
+      wf.async = 'true';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wf, s);
+    })(); 
+  </script>
+{% endif %}
+
+{%- if settings.theme_font_family contains 'Google' -%}
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family={{ settings.theme_font_family | remove: 'Google+' }}:300,400,500,600,700">
+{%- endif -%}
+{%- if settings.theme_font_family_tertiary contains 'Google' -%}
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family={{ settings.theme_font_family_tertiary | remove: 'Google+' }}:300,400,500,600,700">
+{% endif %}
+
+{% comment %}
+{{ 'global.scss.css' | asset_url | stylesheet_tag }}
+{% endcomment %}
+{%- if page.template_suffix == 'demo-products' -%}
+  {{ 'products_demo.scss.css' | asset_url | stylesheet_tag }}
+{%- else -%}
+  {{ 'global.scss.css' | asset_url | stylesheet_tag }}
+{% endif %}

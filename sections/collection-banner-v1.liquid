@@ -1,0 +1,461 @@
+<style>
+  .banner-{{section.id}} .collection_banner .image-bar__item h3:before{
+    background-color:{{ section.settings.color_hover }} !important;
+  }
+  .banner-{{section.id}} .collection_banner .image-bar__item:hover .image-bar__sub{
+    color:{{ section.settings.color_hover }} !important;
+  }
+  {% if section.settings.enables_padding %}
+    .banner-{{section.id}} .image-bar .grid__item{
+      padding: 0;
+    }
+    .banner-{{section.id}} .collection_banner{
+      margin:0;
+    }
+    .banner-{{section.id}} .collection_banner .image-bar__item{
+      margin-bottom: 0;
+    }
+    @media screen and (min-width: 992px){
+      .banner-{{section.id}} .image-bar--small .image-bar__content{
+         height:315px;
+      }
+    }
+  {% endif %}
+</style>
+{% if section.settings.animation %}
+<style>
+  .banner-{{section.id}} .collection_banner .image-bar__item .image-bar_bg{
+   transform: none !important;
+  }
+  .banner-{{section.id}} .collection_banner .image-bar__item h3::before{
+    display: none !important;
+  }
+</style>
+{% endif %}
+{% assign columns_selector = section.settings.col_selector | plus: 0 %}
+{% assign colProduct = 12 | divided_by:columns_selector %}
+  {% if columns_selector == 5 %}
+  {% capture grid_item_width %}col-md-2-4 col-sm-4 col-xs-12{% endcapture %}
+  {% else %}
+  {% capture grid_item_width %}col-md-{{ colProduct }} col-sm-{{ colProduct }} col-xs-12{% endcapture %}
+  {% endif %}
+{% include 'set_layout' %}
+<div class="block-section lazyload banner_custom banner-{{section.id}}"  data-section-type="banner" data-section-id="{{ section.id }}" data-enable3d ="{{section.settings.enables_3d}}" {% if section.settings.custom_space %} style="{{ section.settings.custom_space }};background-color: {{section.settings.bg_section }};" {% endif %}>
+  <div  class="block_content {{set-box}} banner-wrapper">
+    {% if section.settings.title != blank %}
+         {% include 'style_header' %}
+         <div class="section-header text-center {{ title_style }} {{ size_title }}">
+            <h2><span>{{ section.settings.title | escape }}</span></h2>
+         </div>
+     {% endif %}
+    <div id="Banner-{{ section.id }}" class="row collection_banner image-bar  product-grid ">
+      <div class="grid-sizer {{grid_item_width}}"></div>
+       
+      {%- for block in section.blocks -%}
+        {%- case block.settings.text-align -%}
+          {%- when 'center' -%}
+            {%- assign align = 'text-center' -%}
+          {%- when 'left' -%}
+            {%- assign align = 'text-left' -%}
+          {%- when 'right' -%}
+            {%- assign align = 'text-right' -%}
+          {%- when 'left-bottom' -%}
+            {%- assign align = 'text-left-bottom' -%}
+          {%- when 'right-bottom' -%}
+            {%- assign align = 'text-right-bottom' -%}
+          {%- when 'center-bottom' -%}
+            {%- assign align = 'text-center-bottom' -%}
+          {%- when 'left-vertical' -%}
+            {%- assign align = 'text-left-vertical' -%}
+          {%- when 'right-vertical' -%}
+            {%- assign align = 'text-right-vertical' -%}
+          {%- when 'center-in' -%}
+            {%- assign align = 'text-in-center' -%}
+        {%- endcase -%}  
+        {%- case block.settings.section_height -%}
+          {%- when 'x-small' -%}
+            {%- assign image_height = '125' -%}
+          {%- when 'small' -%}
+            {%- assign image_height = '300' -%}
+          {%- when 'medium' -%}
+            {%- assign image_height = '475' -%}
+          {%- when 'large' -%}
+            {%- assign image_height = '650' -%}
+          {%- when 'x-large' -%}
+            {%- assign image_height = '775' -%}
+        {%- endcase -%}
+        {%- capture image_size -%}{{ image_width }}x{{ image_height }}{%- endcapture -%}
+        {%- case block.settings.size_width -%}
+          {%- when '20%' -%}
+            {%- assign column_size = 'col-xs-12 col-md-2-4 col-sm-4 ' -%}
+          {%- when '25%' -%}
+            {%- assign column_size = 'col-xs-12 col-md-3 col-sm-6 ' -%}
+            {%- assign image_width = '400' -%}
+          {%- when '33%' -%}
+            {%- assign column_size = 'col-xs-12 col-md-4 col-sm-4 ' -%}
+            {%- assign image_width = '640' -%} 
+          {%- when '50%' -%}
+            {%- assign column_size = 'col-xs-12 col-md-6 col-sm-12 ' -%}
+            {%- assign image_width = '800' -%}
+          {% when '66%' %}
+            {%- assign column_size = 'col-xs-12 col-md-8 col-sm-12 ' -%}
+            {%- assign image_width = '1000' -%}
+          {% when '75%' %}
+            {%- assign column_size = 'col-xs-12 col-md-9 col-sm-12 ' -%}
+            {%- assign image_width = '1200' -%}
+          {%- when '100%' -%}
+            {%- assign column_size = 'col-xs-12' -%}
+            {%- assign image_width = '2000' -%}
+        {%- endcase -%}
+        {%- assign img_url = '' -%}
+        <div class=" {{ column_size }} grid__item" {{ block.shopify_attributes }}>
+          {%- comment -%}
+          <style>
+            .image-bar__item--{{ block.id }} {
+              background-position: {{ block.settings.alignment }};
+            }
+          </style>
+            {%- endcomment -%}
+          {%- assign css =  '.image-bar__item--' | append:  block.id  -%}
+          {%- assign css =  css | append:  '{ background-position:'| append: block.settings.alignment -%}
+          {%- assign css =  css | append: '}' -%}
+          <script type="text/javascript">
+            var css = "{{ css }}",
+            head = document.head || document.getElementsByTagName('head')[0],
+              style = document.createElement('style');
+
+            style.type = 'text/css';
+            if (style.styleSheet){
+              style.styleSheet.cssText = css;
+            } else {
+              style.appendChild(document.createTextNode(css));
+            }
+
+            head.appendChild(style);
+          </script>
+          {%- if block.settings.image != blank -%}
+            {%- assign img_url = block.settings.image | img_url: image_size, crop: 'center' -%}
+          {%- else -%}
+            {%- assign img_url = '' -%}
+          {%- endif -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" class="image-bar__item image-bar__link image-bar--{{ block.settings.section_height }} ">
+          {%- elsif img_url != blank -%}
+            <div class="image-bar__item image-bar__item--{{ block.id }} image-bar--{{ block.settings.section_height }}" >
+          {%- else -%}
+            <div class="image-bar__item image-bar--{{ block.settings.section_height }}">
+          {%- endif -%}
+          <div class="image-bar__content{% if block.settings.cta_label != blank %} image-bar__overlay{% endif %} project{{section.id}}" >
+            {%- if img_url == blank -%}
+              {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- else -%}
+              <div class="image-bar__text image-bar__content project__card {% if block.settings.text-align == 'center-in' %} image-bar-in {% elsif block.settings.text-align == 'left-vertical' %} image-bar-left {% elsif block.settings.text-align == 'right-vertical' %}image-bar-right {% endif %}">
+                <div class="item__cotent {{ align }}" style="background-color: {{ block.settings.bg_content }}">
+                  {%- if block.settings.cta_label != blank -%}
+                    <h3 style="color: {{ block.settings.color }}">{{ block.settings.cta_label  }}</h3>
+                  {% endif %}
+                  {%- if block.settings.sub_cta != blank -%}
+                    <span class="image-bar__sub" style="color: {{ block.settings.color_sub }}">{{ block.settings.sub_cta  }}</span>
+                  {% endif %}
+                </div>
+                <div class="image-bar_bg lazyload" data-bgset="{% include 'bgset', image: block.settings.image %}"
+                   data-sizes="auto" data-src="background-image: url({{ img_url }})" ></div>
+              </div>
+            {%- endif -%}
+          </div>
+          {%- if block.settings.link != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+{%- if section.blocks.size == 0 -%}
+  {% include 'no-blocks' %}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Collection Banner Style1",
+  "class": "index-section",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "custom_space",
+      "label": "Css Style Section",
+      "default":"padding-top:100px;padding-bottom:100px"
+    },
+    {
+       "type":      "radio",
+       "id":        "set_box",
+       "label":     "Set Layout Section",
+       "options": [
+         { "value": "box-container", "label": "Box Container" },
+         { "value": "box-full", "label": "Box Full" },
+         { "value": "none", "label": "None" }
+       ],
+       "default":   "box-full",
+       "info":      "Set Layout Section"
+    },
+      {
+        "type": "color",
+        "id": "bg_section",
+        "label": "Background color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "color_hover",
+        "label": "Color Hover",
+        "default": "#f94e3f"
+      },
+      {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Top offer 2018"
+    },
+    
+    {
+      "type": "checkbox",
+      "id": "animation",
+      "label": "Disable Animation Hover"
+ },
+    {
+      "type": "checkbox",
+      "id": "enables_3d",
+      "label": "Enable Animation Hover 3d"
+    },
+    {
+      "type": "checkbox",
+      "id": "enables_padding",
+      "label": "Disable Padding"
+    },
+   {
+        "type": "select",
+        "id": "col_selector",
+        "label": "Set columns min",
+        "default": "4",
+        "info": "Select column min (Ex: 2, 3, 4, 5, 6)",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          }
+        ]
+     }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "text-align",
+          "label": "Text Aligerment",
+          "default": "left",
+          "options": [
+            {
+              "label": "Center Top",
+              "value": "center"
+            },
+            {
+              "label": "Center In",
+              "value": "center-in"
+            },
+            {
+              "label": "Center Bottom",
+              "value": "center-bottom"
+            },
+            {
+              "label": "Left",
+              "value": "left"
+            },
+            {
+              "label": "Left Bottom",
+              "value": "left-bottom"
+            },
+            {
+              "label": "Left Vertical",
+              "value": "left-vertical"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            },
+            {
+              "label": "Right Bottom",
+              "value": "right-bottom"
+            },
+             {
+              "label": "Right Vertical",
+              "value": "right-vertical"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "section_height",
+          "label": "Section height",
+          "default": "medium",
+          "options": [
+            {
+              "label": "Extra Small",
+              "value": "x-small"
+            },
+            {
+              "label": "Small",
+              "value": "small"
+            },
+            {
+              "label": "Medium",
+              "value": "medium"
+            },
+            {
+              "label": "Large",
+              "value": "large"
+            },
+            {
+              "label": "Extra Large",
+              "value": "x-large"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "size_width",
+          "label": "Section Columns",
+          "default": "25%",
+          "options": [
+            {
+              "label": "20%",
+              "value": "20%"
+            },
+            {
+              "label": "25%",
+              "value": "25%"
+            },
+            {
+              "label": "33%",
+              "value": "33%"
+            },
+            {
+              "label": "50%",
+              "value": "50%"
+            },
+            {
+              "label": "66%",
+              "value": "66%"
+            },
+            {
+              "label": "75%",
+              "value": "75%"
+            },
+            {
+              "label": "100%",
+              "value": "100%"
+            }
+          ]
+        },
+        {
+          "type": "color",
+          "id": "bg_content",
+          "label": "Background Color Cotent",
+          "default" : "#FFFFFF"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Image alignment",
+          "default": "center",
+          "options": [
+            {
+              "value": "top",
+              "label": "Top"
+            },
+            {
+              "value": "center",
+              "label": "Middle"
+            },
+            {
+              "value": "bottom",
+              "label": "Bottom"
+            }
+          ]
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link",
+          "info": "Optional"
+        },
+        {
+          "type": "text",
+          "id": "cta_label",
+          "label": "Caption"
+        },
+         {
+           "type": "color",
+          "id": "color",
+          "label": "Color Title",
+           "default" : "#222222"
+         },
+        {
+          "type": "text",
+          "id": "sub_cta",
+          "label": "Caption"
+        },
+        {
+          "type": "color",
+          "id": "color_sub",
+          "label": "Sub Color Title",
+          "default" : "#999999"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Image Banner",
+      "category": "Image",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
